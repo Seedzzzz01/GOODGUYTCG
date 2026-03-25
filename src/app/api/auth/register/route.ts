@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { email, password, displayName } = await request.json();
+    const { email, password, displayName, referralCode } = await request.json();
 
     if (!email || !password || !displayName) {
       return NextResponse.json(
@@ -48,12 +48,23 @@ export async function POST(request: Request) {
       );
     }
 
+    // Look up referrer if code provided
+    let referredById: string | undefined;
+    if (referralCode) {
+      const referrer = await prisma.user.findUnique({
+        where: { referralCode: referralCode.toUpperCase().trim() },
+        select: { id: true },
+      });
+      if (referrer) referredById = referrer.id;
+    }
+
     const user = await prisma.user.create({
       data: {
         email,
         passwordHash: hashSync(password, 12),
         displayName,
         name: displayName,
+        referredById,
       },
     });
 

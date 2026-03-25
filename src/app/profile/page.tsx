@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import BountyRank from "@/components/gamification/BountyRank";
 import RankBadge from "@/components/gamification/RankBadge";
 import { formatPrice, getRankBySpent } from "@/lib/constants";
+import { useToast } from "@/hooks/useToast";
 
 interface UserProfile {
   id: string; email: string; displayName: string; phone: string;
@@ -166,9 +168,20 @@ export default function ProfilePage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Bounty Rank */}
-            <div className="lg:col-span-1">
+            {/* Bounty Rank + Referral */}
+            <div className="lg:col-span-1 space-y-6">
               <BountyRank totalSpent={profile.totalSpent} />
+
+              {/* Membership Link */}
+              <Link href="/membership">
+                <div className="bg-[#0f1535] border border-amber-500/10 hover:border-amber-500/30 rounded-2xl p-4 text-center transition-colors cursor-pointer">
+                  <p className="text-amber-400 font-bold text-sm">ดูสิทธิพิเศษทั้งหมด</p>
+                  <p className="text-amber-100/30 text-xs mt-1">Tier Benefits →</p>
+                </div>
+              </Link>
+
+              {/* Referral Code */}
+              <ReferralSection />
             </div>
 
             {/* Order History */}
@@ -232,6 +245,72 @@ export default function ProfilePage() {
           </div>
         </motion.div>
       </div>
+    </div>
+  );
+}
+
+function ReferralSection() {
+  const [data, setData] = useState<{ referralCode: string; referralCount: number; referrals: { displayName: string; createdAt: string }[] } | null>(null);
+  const [copied, setCopied] = useState(false);
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    fetch("/api/user/referral")
+      .then(r => r.ok ? r.json() : null)
+      .then(setData)
+      .catch(() => {});
+  }, []);
+
+  if (!data) return null;
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(data.referralCode);
+    setCopied(true);
+    addToast({ title: "คัดลอกแล้ว!", message: data.referralCode, icon: "📋", type: "success" });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="bg-[#0f1535] border border-amber-500/10 rounded-2xl p-5">
+      <h3 className="text-amber-400 font-bold text-sm tracking-wider uppercase mb-3">
+        ชวนเพื่อน
+      </h3>
+      <p className="text-amber-100/30 text-xs mb-3">
+        แชร์โค้ดให้เพื่อน เพื่อนได้ส่วนลด 3% ออเดอร์แรก
+      </p>
+
+      {/* Code display */}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="flex-1 bg-[#1a2040] border border-amber-500/10 rounded-lg px-3 py-2 text-center">
+          <span className="text-amber-400 font-mono font-bold text-lg tracking-wider">
+            {data.referralCode}
+          </span>
+        </div>
+        <button
+          onClick={copyCode}
+          className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold px-3 py-2 rounded-lg transition-colors text-sm"
+        >
+          {copied ? "✓" : "Copy"}
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-amber-100/30">เพื่อนที่ชวนมา</span>
+        <span className="text-amber-400 font-bold">{data.referralCount} คน</span>
+      </div>
+
+      {/* Recent referrals */}
+      {data.referrals.length > 0 && (
+        <div className="mt-3 space-y-1.5">
+          {data.referrals.slice(0, 5).map((r, i) => (
+            <div key={i} className="flex items-center justify-between text-xs bg-[#1a2040] rounded-lg px-2.5 py-1.5">
+              <span className="text-amber-100/50">{r.displayName || "สมาชิกใหม่"}</span>
+              <span className="text-amber-100/20">{new Date(r.createdAt).toLocaleDateString("th-TH")}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

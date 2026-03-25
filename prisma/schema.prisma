@@ -93,14 +93,21 @@ model User {
   role          Role      @default(CUSTOMER)
   image         String?
   name          String?
+  referralCode  String?   @unique
+  referredById  String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  referredBy        User?             @relation("Referrals", fields: [referredById], references: [id])
+  referrals         User[]            @relation("Referrals")
   accounts          Account[]
   sessions          Session[]
   orders            Order[]
   shippingAddresses ShippingAddress[]
   verifiedPayments  PaymentProof[]    @relation("VerifiedBy")
+
+  @@index([referralCode])
+  @@index([referredById])
 }
 
 model Product {
