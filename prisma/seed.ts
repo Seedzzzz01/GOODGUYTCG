@@ -1,0 +1,111 @@
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { hashSync } from "bcryptjs";
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
+
+// Status mapping from our constants to Prisma enum
+const statusMap: Record<string, "IN_STOCK" | "PRE_ORDER" | "SOLD_OUT"> = {
+  "in-stock": "IN_STOCK",
+  "pre-order": "PRE_ORDER",
+  "sold-out": "SOLD_OUT",
+};
+
+const categoryMap: Record<string, "BOOSTER" | "EXTRA" | "PREMIUM" | "STARTER"> = {
+  booster: "BOOSTER",
+  extra: "EXTRA",
+  premium: "PREMIUM",
+  starter: "STARTER",
+};
+
+async function main() {
+  console.log("🌱 Seeding database...");
+
+  // ─── Create Users ───
+  const adminUser = await prisma.user.upsert({
+    where: { email: "admin@goodguytcg.com" },
+    update: {},
+    create: {
+      email: "admin@goodguytcg.com",
+      passwordHash: hashSync("admin123", 12),
+      displayName: "Admin",
+      name: "Admin",
+      role: "ADMIN",
+      totalSpent: 0,
+      orderCount: 0,
+    },
+  });
+  console.log(`  ✓ Admin user: ${adminUser.email}`);
+
+  const demoUser = await prisma.user.upsert({
+    where: { email: "demo@goodguytcg.com" },
+    update: {},
+    create: {
+      email: "demo@goodguytcg.com",
+      passwordHash: hashSync("demo123", 12),
+      displayName: "Nakama Member",
+      name: "Nakama Member",
+      role: "CUSTOMER",
+      totalSpent: 12500,
+      orderCount: 4,
+      phone: "081-234-5678",
+      lineId: "@nakama",
+    },
+  });
+  console.log(`  ✓ Demo user: ${demoUser.email}`);
+
+  // ─── Seed Products from SAMPLE_SETS ───
+  // We import this dynamically to avoid TypeScript path alias issues in seed
+  const { SAMPLE_SETS } = await import("../src/lib/constants");
+
+  for (const set of SAMPLE_SETS) {
+    await prisma.product.upsert({
+      where: { slug: set.slug },
+      update: {
+        name: set.name,
+        code: set.code,
+        description: set.description,
+        image: set.image,
+        boxCount: set.boxCount,
+        pricePerBox: set.pricePerBox,
+        stock: set.stock,
+        status: statusMap[set.status] || "IN_STOCK",
+        releaseDate: set.releaseDate,
+        packsPerBox: set.packsPerBox,
+        cardsPerPack: set.cardsPerPack,
+        category: set.category ? categoryMap[set.category] : null,
+        islandTheme: set.islandTheme as object,
+      },
+      create: {
+        name: set.name,
+        slug: set.slug,
+        code: set.code,
+        description: set.description,
+        image: set.image,
+        boxCount: set.boxCount,
+        pricePerBox: set.pricePerBox,
+        stock: set.stock,
+        status: statusMap[set.status] || "IN_STOCK",
+        releaseDate: set.releaseDate,
+        packsPerBox: set.packsPerBox,
+        cardsPerPack: set.cardsPerPack,
+        category: set.category ? categoryMap[set.category] : null,
+        islandTheme: set.islandTheme as object,
+      },
+    });
+  }
+  console.log(`  ✓ ${SAMPLE_SETS.length} products seeded`);
+
+  console.log("✅ Seed complete!");
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
