@@ -1,10 +1,11 @@
 "use client";
 
-import { use, useState, useMemo } from "react";
+import { use, useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { SAMPLE_SETS, formatPrice } from "@/lib/constants";
+import { TCGSet } from "@/types";
 import { useCart } from "@/hooks/useCart";
 import SetCardList from "@/components/shop/SetCardList";
 import { getLocalSetCards } from "@/lib/card-data";
@@ -20,16 +21,50 @@ const RARITY_RATES: Record<string, string> = {
   C: "~7 ใบ/กล่อง",
 };
 
+const STATUS_MAP: Record<string, TCGSet["status"]> = {
+  IN_STOCK: "in-stock", PRE_ORDER: "pre-order", SOLD_OUT: "sold-out",
+};
+const CAT_MAP: Record<string, TCGSet["category"]> = {
+  BOOSTER: "booster", EXTRA: "extra", PREMIUM: "premium", STARTER: "starter",
+};
+
 export default function SetDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const set = SAMPLE_SETS.find((s) => s.slug === slug);
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+
+  // Try DB first, fallback to hardcoded
+  const fallback = SAMPLE_SETS.find((s) => s.slug === slug) || null;
+  const [set, setSet] = useState<TCGSet | null>(fallback);
+
+  useEffect(() => {
+    fetch(`/api/products/${slug}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(p => {
+        if (!p) return;
+        const theme = (p.islandTheme as Record<string, unknown>) || {};
+        setSet({
+          id: p.code, name: p.name, slug: p.slug, code: p.code,
+          description: p.description || "", image: p.image || "",
+          boxCount: p.boxCount || 1, pricePerBox: p.pricePerBox,
+          stock: p.stock || 0, status: STATUS_MAP[p.status] || "in-stock",
+          releaseDate: p.releaseDate || "", packsPerBox: p.packsPerBox || 24,
+          cardsPerPack: p.cardsPerPack || 6,
+          category: CAT_MAP[p.category] || undefined,
+          islandTheme: {
+            name: (theme.name as string) || "", color: (theme.color as string) || "#e74c3c",
+            gradient: (theme.gradient as string) || "", description: (theme.description as string) || "",
+            arc: (theme.arc as string) || "", keyCharacters: (theme.keyCharacters as string[]) || [],
+          },
+        });
+      })
+      .catch(() => {});
+  }, [slug]);
 
   if (!set) {
     return (

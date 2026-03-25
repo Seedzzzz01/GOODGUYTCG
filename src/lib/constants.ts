@@ -1,37 +1,10 @@
 import { TCGSet, BountyRank, SpinReward } from "@/types";
 
 export const BOUNTY_RANKS: BountyRank[] = [
-  {
-    name: "East Blue",
-    minSpent: 0,
-    discount: 0,
-    icon: "🌊",
-    image: "/images/ranks/east-blue.png",
-    color: "#4a90d9",
-  },
-  {
-    name: "Paradise",
-    minSpent: 5000,
-    discount: 3,
-    icon: "⚓",
-    image: "/images/ranks/paradise.png",
-    color: "#f5a623",
-  },
-  {
-    name: "New World",
-    minSpent: 15000,
-    discount: 5,
-    icon: "🔥",
-    color: "#e74c3c",
-  },
-  {
-    name: "Yonko",
-    minSpent: 50000,
-    discount: 8,
-    icon: "👑",
-    image: "/images/ranks/yonko.png",
-    color: "#ffd700",
-  },
+  { name: "East Blue", minSpent: 0, discount: 0, icon: "🌊", color: "#4a90d9" },
+  { name: "Paradise", minSpent: 5000, discount: 3, icon: "⚓", color: "#f5a623" },
+  { name: "New World", minSpent: 15000, discount: 5, icon: "🔥", color: "#e74c3c" },
+  { name: "Yonko", minSpent: 50000, discount: 8, icon: "👑", color: "#ffd700" },
 ];
 
 // Helper to create set data with box pricing

@@ -1,17 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import SetCard from "@/components/shop/SetCard";
-import { SAMPLE_SETS } from "@/lib/constants";
 import { TCGSet } from "@/types";
+import { SAMPLE_SETS } from "@/lib/constants";
 
 type StatusFilter = "all" | "in-stock" | "pre-order" | "sold-out";
 
+const STATUS_DB_TO_UI: Record<string, TCGSet["status"]> = {
+  IN_STOCK: "in-stock",
+  PRE_ORDER: "pre-order",
+  SOLD_OUT: "sold-out",
+};
+
+const CATEGORY_DB_TO_UI: Record<string, TCGSet["category"]> = {
+  BOOSTER: "booster",
+  EXTRA: "extra",
+  PREMIUM: "premium",
+  STARTER: "starter",
+};
+
+/** Map DB product to frontend TCGSet shape */
+function dbToSet(p: Record<string, unknown>): TCGSet {
+  const theme = (p.islandTheme as Record<string, unknown>) || {};
+  return {
+    id: p.code as string,
+    name: p.name as string,
+    slug: p.slug as string,
+    code: p.code as string,
+    description: p.description as string || "",
+    image: p.image as string || `/images/sets/${(p.code as string).toLowerCase().replace("-", "")}.png`,
+    boxCount: p.boxCount as number || 1,
+    pricePerBox: p.pricePerBox as number,
+    stock: p.stock as number || 0,
+    status: STATUS_DB_TO_UI[p.status as string] || "in-stock",
+    releaseDate: p.releaseDate as string || "",
+    packsPerBox: p.packsPerBox as number || 24,
+    cardsPerPack: p.cardsPerPack as number || 6,
+    category: CATEGORY_DB_TO_UI[p.category as string] || undefined,
+    islandTheme: {
+      name: (theme.name as string) || "",
+      color: (theme.color as string) || "#e74c3c",
+      gradient: (theme.gradient as string) || "from-red-900 to-orange-500",
+      description: (theme.description as string) || "",
+      arc: (theme.arc as string) || "",
+      keyCharacters: (theme.keyCharacters as string[]) || [],
+    },
+  };
+}
+
 export default function ShopPage() {
+  const [sets, setSets] = useState<TCGSet[]>(SAMPLE_SETS); // fallback to hardcoded initially
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [sortBy, setSortBy] = useState<"name" | "price" | "date">("date");
+
+  // Fetch from DB on mount — replace hardcoded data with live data
+  useEffect(() => {
+    fetch("/api/products")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.length > 0) {
+          setSets(data.map(dbToSet));
+        }
+        // If fetch fails, keep SAMPLE_SETS as fallback
+      })
+      .catch(() => {}); // silently fallback
+  }, []);
 
   const filters: { value: StatusFilter; label: string }[] = [
     { value: "all", label: "All Sets" },
@@ -20,7 +76,7 @@ export default function ShopPage() {
     { value: "sold-out", label: "Sold Out" },
   ];
 
-  const filtered = SAMPLE_SETS.filter(
+  const filtered = sets.filter(
     (s) => filter === "all" || s.status === filter
   );
 

@@ -1,7 +1,6 @@
-import { OPTCGCard, OPTCGSet } from "@/types";
+import { OPTCGCard } from "@/types";
 
 // Local data — downloaded from OPTCG API
-import setsData from "@/data/sets.json";
 import cards_op_01 from "@/data/cards_op_01.json";
 import cards_op_02 from "@/data/cards_op_02.json";
 import cards_op_03 from "@/data/cards_op_03.json";
@@ -46,10 +45,6 @@ const CARDS_MAP: Record<string, OPTCGCard[]> = {
 
 // All cards flattened
 const ALL_CARDS: OPTCGCard[] = Object.values(CARDS_MAP).flat();
-
-export function getLocalSets(): OPTCGSet[] {
-  return setsData as OPTCGSet[];
-}
 
 export function getLocalSetCards(setId: string): OPTCGCard[] {
   // Try exact match first

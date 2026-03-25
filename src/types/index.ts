@@ -36,7 +36,6 @@ export interface BountyRank {
   minSpent: number;
   discount: number;
   icon: string;
-  image?: string;
   color: string;
 }
 

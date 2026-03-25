@@ -16,11 +16,6 @@ export function getCardImageUrl(card: OPTCGCard, lang: "JP" | "EN" = "JP"): stri
   return `${LIMITLESS_CDN}/${setFolder}/${cardId}_${lang}.webp`;
 }
 
-/** For special sets, the set folder may differ */
-function getSetFolder(setId: string): string {
-  return setId.replace("-", "");
-}
-
 export async function getAllSets(): Promise<OPTCGSet[]> {
   const res = await fetch(`${BASE_URL}/allSets/`, { next: { revalidate: 3600 } });
   if (!res.ok) throw new Error("Failed to fetch sets");
