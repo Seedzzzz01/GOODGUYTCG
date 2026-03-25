@@ -6,8 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { OPTCGCard, OPTCGSet } from "@/types";
 import {
-  getAllSets,
-  getSetCards,
   RARITY_LABELS,
   COLOR_MAP,
   getRarityColor,
@@ -23,14 +21,13 @@ export default function CardsPage() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [rarityFilter, setRarityFilter] = useState<string>("all");
 
-  // Load sets on mount
+  // Load sets from DB
   useEffect(() => {
-    getAllSets()
-      .then((data) => {
+    fetch("/api/card-sets")
+      .then((r) => r.json())
+      .then((data: OPTCGSet[]) => {
         setSets(data);
-        if (data.length > 0) {
-          setSelectedSet(data[0].set_id);
-        }
+        if (data.length > 0) setSelectedSet(data[0].set_id);
       })
       .catch(console.error);
   }, []);
@@ -39,8 +36,9 @@ export default function CardsPage() {
   useEffect(() => {
     if (!selectedSet) return;
     setLoading(true);
-    getSetCards(selectedSet)
-      .then((data) => {
+    fetch(`/api/cards?setId=${selectedSet}`)
+      .then((r) => r.json())
+      .then((data: OPTCGCard[]) => {
         setCards(data);
         setLoading(false);
       })

@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { OPTCGCard } from "@/types";
 import { RARITY_LABELS, COLOR_MAP, getRarityColor, getCardImageUrl } from "@/lib/optcg-api";
-import { getLocalSetCards } from "@/lib/card-data";
 
 interface SetCardListProps {
   setCode: string; // e.g. "OP-01"
@@ -22,16 +21,13 @@ export default function SetCardList({ setCode }: SetCardListProps) {
 
   useEffect(() => {
     setLoading(true);
-    // Use local data — instant, no API call
-    const data = getLocalSetCards(setCode);
-    const seen = new Set<string>();
-    const unique = data.filter((c) => {
-      if (seen.has(c.card_set_id)) return false;
-      seen.add(c.card_set_id);
-      return true;
-    });
-    setCards(unique);
-    setLoading(false);
+    fetch(`/api/cards?setId=${setCode}`)
+      .then((r) => r.json())
+      .then((data: OPTCGCardType[]) => {
+        setCards(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [setCode]);
 
   // Group by rarity + calculate percentages

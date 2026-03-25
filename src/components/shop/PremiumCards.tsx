@@ -1,35 +1,27 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { getRarityColor, RARITY_LABELS, COLOR_MAP, getCardImageUrl } from "@/lib/optcg-api";
-import { ALL_CARDS } from "@/lib/card-data";
+import { OPTCGCard } from "@/types";
 import TiltCard from "@/components/ui/TiltCard";
 
 // Premium card IDs — SEC rarity cards
 const PREMIUM_CARD_IDS = [
-  "OP01-120", // Shanks SEC
-  "OP02-120", // Ace SEC
-  "OP03-122", // Luffy SEC
-  "OP04-118", // Sabo SEC
-  "OP05-119", // Luffy Gear 5 SEC
-  "OP06-118", // Yamato SEC
+  "OP01-120", "OP02-120", "OP03-122",
+  "OP04-118", "OP05-119", "OP06-118",
 ];
 
 export default function PremiumCards() {
-  const cards = useMemo(() => {
-    return PREMIUM_CARD_IDS
-      .map((id) => {
-        const matches = ALL_CARDS.filter((c) => c.card_set_id === id);
-        if (matches.length === 0) return null;
-        // Pick most expensive version
-        return [...matches].sort(
-          (a, b) => (b.market_price || 0) - (a.market_price || 0)
-        )[0];
-      })
-      .filter(Boolean);
+  const [cards, setCards] = useState<OPTCGCard[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/cards?ids=${PREMIUM_CARD_IDS.join(",")}`)
+      .then((r) => r.json())
+      .then(setCards)
+      .catch(() => {});
   }, []);
 
   if (cards.length === 0) return null;

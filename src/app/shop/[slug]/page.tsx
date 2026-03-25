@@ -5,10 +5,9 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { SAMPLE_SETS, formatPrice } from "@/lib/constants";
-import { TCGSet } from "@/types";
+import { TCGSet, OPTCGCard } from "@/types";
 import { useCart } from "@/hooks/useCart";
 import SetCardList from "@/components/shop/SetCardList";
-import { getLocalSetCards } from "@/lib/card-data";
 import { getRarityColor, RARITY_LABELS } from "@/lib/optcg-api";
 import LootBoxAnimation from "@/components/ui/LootBoxAnimation";
 import { useToast } from "@/hooks/useToast";
@@ -363,22 +362,20 @@ export default function SetDetailPage({
 
 /* ─── Drop Rate Cards Component ─── */
 function DropRateCards({ setCode }: { setCode: string }) {
-  const cardsByRarity = useMemo(() => {
-    const allCards = getLocalSetCards(setCode);
-    // Deduplicate by card_set_id
-    const seen = new Set<string>();
-    const unique = allCards.filter((c) => {
-      if (seen.has(c.card_set_id)) return false;
-      seen.add(c.card_set_id);
-      return true;
-    });
+  const [cardsByRarity, setCardsByRarity] = useState<Record<string, OPTCGCard[]>>({});
 
-    const groups: Record<string, typeof unique> = {};
-    for (const card of unique) {
-      if (!groups[card.rarity]) groups[card.rarity] = [];
-      groups[card.rarity].push(card);
-    }
-    return groups;
+  useEffect(() => {
+    fetch(`/api/cards?setId=${setCode}`)
+      .then((r) => r.json())
+      .then((cards: OPTCGCard[]) => {
+        const groups: Record<string, OPTCGCard[]> = {};
+        for (const card of cards) {
+          if (!groups[card.rarity]) groups[card.rarity] = [];
+          groups[card.rarity].push(card);
+        }
+        setCardsByRarity(groups);
+      })
+      .catch(() => {});
   }, [setCode]);
 
   const total = Object.values(cardsByRarity).flat().length;

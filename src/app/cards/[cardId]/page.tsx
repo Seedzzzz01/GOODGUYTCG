@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { OPTCGCard } from "@/types";
-import { getCard, RARITY_LABELS, COLOR_MAP, getRarityColor, getCardImageUrl } from "@/lib/optcg-api";
+import { RARITY_LABELS, COLOR_MAP, getRarityColor, getCardImageUrl } from "@/lib/optcg-api";
 
 export default function CardDetailPage({
   params,
@@ -19,7 +19,8 @@ export default function CardDetailPage({
   const [cardLang, setCardLang] = useState<"JP" | "EN">("JP");
 
   useEffect(() => {
-    getCard(cardId)
+    fetch(`/api/cards?cardId=${cardId}`)
+      .then((r) => r.json())
       .then((data) => {
         setVersions(data);
         if (data.length > 0) setSelected(data[0]);

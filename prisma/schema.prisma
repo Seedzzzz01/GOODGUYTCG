@@ -205,3 +205,38 @@ model PaymentProof {
   order    Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   verifier User? @relation("VerifiedBy", fields: [verifiedBy], references: [id])
 }
+
+// ─── Card Database ───
+
+model CardSet {
+  id       String @id // e.g. "OP-01"
+  name     String // e.g. "Romance Dawn"
+  cards    Card[]
+}
+
+model Card {
+  id             String  @id // e.g. "OP01-077"
+  cardSetId      String  // FK to CardSet
+  cardImageId    String  @default("")
+  name           String
+  setName        String  @default("")
+  cardText       String  @default("")
+  rarity         String  // C, UC, R, SR, SEC, L, SP, P, TR
+  color          String  @default("")
+  cardType       String  @default("") // Character, Event, Stage, Leader
+  life           String?
+  cost           String?
+  power          String?
+  subTypes       String  @default("")
+  counterAmount  Int?
+  attribute      String  @default("")
+  marketPrice    Float?
+  inventoryPrice Float?
+  cardImage      String  @default("") // optcgapi URL
+
+  set CardSet @relation(fields: [cardSetId], references: [id])
+
+  @@index([cardSetId])
+  @@index([rarity])
+  @@index([name])
+}
