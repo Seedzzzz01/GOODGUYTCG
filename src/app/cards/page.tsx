@@ -9,6 +9,7 @@ import {
   RARITY_LABELS,
   COLOR_MAP,
   getRarityColor,
+  getCardImageUrl,
 } from "@/lib/optcg-api";
 
 export default function CardsPage() {
@@ -20,6 +21,7 @@ export default function CardsPage() {
   const [colorFilter, setColorFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [rarityFilter, setRarityFilter] = useState<string>("all");
+  const [cardLang, setCardLang] = useState<"JP" | "EN">("JP");
 
   // Load sets from DB
   useEffect(() => {
@@ -125,6 +127,27 @@ export default function CardsPage() {
 
         {/* Filters */}
         <div className="bg-[#0f1535] border border-amber-500/10 rounded-2xl p-4 mb-8">
+          {/* JP/EN toggle */}
+          <div className="flex justify-end mb-3">
+            <div className="flex items-center bg-[#1a2040] rounded-full p-0.5 border border-amber-500/10">
+              <button
+                onClick={() => setCardLang("JP")}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                  cardLang === "JP" ? "bg-red-600 text-white shadow-md" : "text-amber-100/40 hover:text-amber-100/60"
+                }`}
+              >
+                🇯🇵 JP
+              </button>
+              <button
+                onClick={() => setCardLang("EN")}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                  cardLang === "EN" ? "bg-blue-600 text-white shadow-md" : "text-amber-100/40 hover:text-amber-100/60"
+                }`}
+              >
+                🇺🇸 EN
+              </button>
+            </div>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Search */}
             <input
@@ -201,11 +224,15 @@ export default function CardsPage() {
                       {/* Card Image */}
                       <div className="relative aspect-[5/7] overflow-hidden">
                         <Image
-                          src={card.card_image}
+                          src={getCardImageUrl(card, cardLang)}
                           alt={card.card_name}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (!target.src.includes("optcgapi.com")) target.src = card.card_image;
+                          }}
                         />
 
                         {/* Holographic shimmer on hover */}
