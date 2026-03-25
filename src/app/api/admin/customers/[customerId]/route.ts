@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ customerId: string }> }
 ) {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   const { customerId } = await params;
 
   const customer = await prisma.user.findUnique({
@@ -48,6 +52,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ customerId: string }> }
 ) {
+  const { error: authError } = await requireAdmin();
+  if (authError) return authError;
+
   const { customerId } = await params;
   const body = await request.json();
 

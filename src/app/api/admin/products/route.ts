@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import { requireAdmin } from "@/lib/admin-auth";
 
 function slugify(text: string): string {
   return text
@@ -11,6 +12,9 @@ function slugify(text: string): string {
 }
 
 export async function POST(request: Request) {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   const body = await request.json();
   const {
     name, code, description, image, boxCount, pricePerBox, stock,

@@ -1,8 +1,19 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { hashSync } from "bcryptjs";
+import { rateLimit, getIP } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Rate limit: 5 registrations per IP per 15 minutes
+  const ip = getIP(request);
+  const rl = rateLimit(`register:${ip}`, 5, 15 * 60 * 1000);
+  if (rl.limited) {
+    return NextResponse.json(
+      { error: `ลองใหม่ในอีก ${rl.resetIn} วินาที` },
+      { status: 429 }
+    );
+  }
+
   try {
     const { email, password, displayName } = await request.json();
 
@@ -13,9 +24,18 @@ export async function POST(request: Request) {
       );
     }
 
-    if (password.length < 6) {
+    // Email format validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(
-        { error: "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร" },
+        { error: "รูปแบบอีเมลไม่ถูกต้อง" },
+        { status: 400 }
+      );
+    }
+
+    // Stronger password policy
+    if (password.length < 8) {
+      return NextResponse.json(
+        { error: "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร" },
         { status: 400 }
       );
     }

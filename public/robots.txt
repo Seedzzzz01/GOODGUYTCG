@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /auth
+Disallow: /profile
+Disallow: /checkout
+
+Sitemap: https://goodguytcg.com/sitemap.xml

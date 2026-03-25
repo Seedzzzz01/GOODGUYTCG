@@ -24,12 +24,16 @@ async function main() {
   console.log("🌱 Seeding database...");
 
   // ─── Create Users ───
+  // Admin credentials from env vars (never hardcode in production)
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@goodguytcg.com";
+  const adminPassword = process.env.ADMIN_PASSWORD || "changeme_in_production";
+
   const adminUser = await prisma.user.upsert({
-    where: { email: "admin@goodguytcg.com" },
+    where: { email: adminEmail },
     update: {},
     create: {
-      email: "admin@goodguytcg.com",
-      passwordHash: hashSync("admin123", 12),
+      email: adminEmail,
+      passwordHash: hashSync(adminPassword, 12),
       displayName: "Admin",
       name: "Admin",
       role: "ADMIN",
@@ -39,22 +43,25 @@ async function main() {
   });
   console.log(`  ✓ Admin user: ${adminUser.email}`);
 
-  const demoUser = await prisma.user.upsert({
-    where: { email: "demo@goodguytcg.com" },
-    update: {},
-    create: {
-      email: "demo@goodguytcg.com",
-      passwordHash: hashSync("demo123", 12),
-      displayName: "Nakama Member",
-      name: "Nakama Member",
-      role: "CUSTOMER",
-      totalSpent: 12500,
-      orderCount: 4,
-      phone: "081-234-5678",
-      lineId: "@nakama",
-    },
-  });
-  console.log(`  ✓ Demo user: ${demoUser.email}`);
+  // Demo user only in development
+  if (process.env.NODE_ENV !== "production") {
+    const demoUser = await prisma.user.upsert({
+      where: { email: "demo@goodguytcg.com" },
+      update: {},
+      create: {
+        email: "demo@goodguytcg.com",
+        passwordHash: hashSync("demo12345", 12),
+        displayName: "Nakama Member",
+        name: "Nakama Member",
+        role: "CUSTOMER",
+        totalSpent: 12500,
+        orderCount: 4,
+        phone: "081-234-5678",
+        lineId: "@nakama",
+      },
+    });
+    console.log(`  ✓ Demo user: ${demoUser.email}`);
+  }
 
   // ─── Seed Products from SAMPLE_SETS ───
   // We import this dynamically to avoid TypeScript path alias issues in seed

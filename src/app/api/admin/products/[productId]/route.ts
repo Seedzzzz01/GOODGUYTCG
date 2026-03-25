@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const ALLOWED_FIELDS = [
   "name", "slug", "code", "description", "image",
@@ -12,6 +13,9 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ productId: string }> }
 ) {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   const { productId } = await params;
   const body = await request.json();
 
@@ -32,6 +36,9 @@ export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ productId: string }> }
 ) {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   const { productId } = await params;
 
   // Check if product has any order items

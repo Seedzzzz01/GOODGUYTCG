@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compareSync } from "bcryptjs";
 import prisma from "./db";
 import { authConfig } from "./auth.config";
+import { rateLimit } from "./rate-limit";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -17,6 +18,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+
+        // Rate limit: 10 login attempts per email per 15 minutes
+        const rl = rateLimit(`login:${credentials.email}`, 10, 15 * 60 * 1000);
+        if (rl.limited) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },

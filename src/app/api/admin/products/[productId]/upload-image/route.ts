@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import { requireAdmin } from "@/lib/admin-auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
@@ -11,6 +12,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ productId: string }> }
 ) {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   const { productId } = await params;
 
   const formData = await request.formData();
