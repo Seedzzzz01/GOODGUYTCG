@@ -22,9 +22,14 @@ export default function CartPage() {
   });
 
   // Use real session data for rank discount
-  const userTotalSpent = (session?.user as { totalSpent?: number })?.totalSpent ?? 0;
+  const userSession = session?.user as { totalSpent?: number; orderCount?: number; referredById?: string } | undefined;
+  const userTotalSpent = userSession?.totalSpent ?? 0;
   const rank = getRankBySpent(userTotalSpent);
-  const discountAmount = Math.round(totalPrice * (rank.discount / 100));
+  const rankDiscountAmt = Math.round(totalPrice * (rank.discount / 100));
+  // Referral 3% bonus on first order
+  const isReferralFirstOrder = !!userSession?.referredById && (userSession?.orderCount ?? 0) === 0;
+  const referralDiscountAmt = isReferralFirstOrder ? Math.round(totalPrice * 0.03) : 0;
+  const discountAmount = rankDiscountAmt + referralDiscountAmt;
   const finalPrice = totalPrice - discountAmount;
 
   const handleCheckout = async () => {
@@ -165,12 +170,23 @@ export default function CartPage() {
               {rank.discount > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-amber-100/40 flex items-center gap-2">
-                    Bounty Rank Discount
+                    Bounty Rank
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ color: rank.color, backgroundColor: rank.color + "20" }}>
                       {rank.icon} {rank.name} (-{rank.discount}%)
                     </span>
                   </span>
-                  <span className="text-emerald-400">-฿{formatPrice(discountAmount)}</span>
+                  <span className="text-emerald-400">-฿{formatPrice(rankDiscountAmt)}</span>
+                </div>
+              )}
+              {isReferralFirstOrder && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-amber-100/40 flex items-center gap-2">
+                    โบนัสชวนเพื่อน
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full text-cyan-400 bg-cyan-400/10">
+                      🎁 ออเดอร์แรก -3%
+                    </span>
+                  </span>
+                  <span className="text-emerald-400">-฿{formatPrice(referralDiscountAmt)}</span>
                 </div>
               )}
               <div className="border-t border-amber-500/10 pt-3 flex justify-between">

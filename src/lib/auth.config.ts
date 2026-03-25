@@ -49,6 +49,7 @@ export const authConfig: NextAuthConfig = {
         token.totalSpent = (user as Record<string, unknown>).totalSpent as number;
         token.orderCount = (user as Record<string, unknown>).orderCount as number;
         token.displayName = (user as Record<string, unknown>).displayName as string;
+        token.referredById = (user as Record<string, unknown>).referredById as string | null;
       }
       return token;
     },
@@ -59,6 +60,7 @@ export const authConfig: NextAuthConfig = {
         session.user.totalSpent = token.totalSpent as number;
         session.user.orderCount = token.orderCount as number;
         session.user.displayName = token.displayName as string;
+        session.user.referredById = token.referredById as string | null;
       }
       return session;
     },

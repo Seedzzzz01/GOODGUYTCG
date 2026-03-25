@@ -44,6 +44,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           totalSpent: user.totalSpent,
           orderCount: user.orderCount,
           displayName: user.displayName,
+          referredById: user.referredById,
         };
       },
     }),

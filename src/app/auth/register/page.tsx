@@ -8,12 +8,15 @@ import { motion } from "framer-motion";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
   const [form, setForm] = useState({
     displayName: "",
     email: "",
     password: "",
     confirmPassword: "",
+    referralCode: searchParams?.get("ref") || "",
   });
+  const [referralValid, setReferralValid] = useState<null | boolean>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +43,7 @@ export default function RegisterPage() {
         email: form.email,
         password: form.password,
         displayName: form.displayName,
+        referralCode: form.referralCode || undefined,
       }),
     });
 
@@ -143,6 +147,40 @@ export default function RegisterPage() {
                 placeholder="กรอกรหัสผ่านอีกครั้ง"
                 required
               />
+            </div>
+
+            {/* Referral Code */}
+            <div>
+              <label className="block text-amber-100/60 text-sm mb-1.5">
+                โค้ดชวนเพื่อน <span className="text-amber-100/20">(ถ้ามี)</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={form.referralCode}
+                  onChange={(e) => {
+                    const val = e.target.value.toUpperCase();
+                    update("referralCode", val);
+                    setReferralValid(null);
+                    // Validate when looks complete (GG-XXXXXX = 9 chars)
+                    if (val.length >= 9) {
+                      fetch(`/api/referral/validate?code=${val}`)
+                        .then(r => r.json())
+                        .then(d => setReferralValid(d.valid))
+                        .catch(() => setReferralValid(null));
+                    }
+                  }}
+                  className="w-full bg-[#1a2040] border border-amber-500/10 rounded-xl px-4 py-3 text-amber-100 placeholder-amber-100/20 focus:outline-none focus:border-amber-500/40 transition-colors font-mono tracking-wider"
+                  placeholder="GG-XXXXXX"
+                  maxLength={12}
+                />
+                {referralValid === true && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-400 text-sm font-bold">✓ ได้ส่วนลด 3%</span>
+                )}
+                {referralValid === false && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-400 text-xs">โค้ดไม่ถูกต้อง</span>
+                )}
+              </div>
             </div>
 
             {error && (

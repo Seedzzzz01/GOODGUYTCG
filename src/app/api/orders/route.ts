@@ -67,10 +67,13 @@ export async function POST(request: Request) {
     // 2. Get user's current totalSpent for bounty rank discount
     const user = await tx.user.findUnique({
       where: { id: session.user.id },
-      select: { totalSpent: true },
+      select: { totalSpent: true, orderCount: true, referredById: true },
     });
 
     const rank = getRankBySpent(user?.totalSpent ?? 0);
+
+    // Check if referred user's first order → bonus 3% discount
+    const isReferralFirstOrder = !!user?.referredById && (user?.orderCount ?? 0) === 0;
 
     // 3. Calculate totals server-side
     let subtotal = 0;
@@ -97,7 +100,10 @@ export async function POST(request: Request) {
       });
     }
 
-    const discountAmount = Math.floor(subtotal * (rank.discount / 100));
+    // Rank discount + referral bonus (3% on first order if referred)
+    const rankDiscount = Math.floor(subtotal * (rank.discount / 100));
+    const referralDiscount = isReferralFirstOrder ? Math.floor(subtotal * 0.03) : 0;
+    const discountAmount = rankDiscount + referralDiscount;
     const total = subtotal - discountAmount;
 
     // 4. Generate order number: GG + YYMMdd + 4-digit random
@@ -117,7 +123,10 @@ export async function POST(request: Request) {
         userId: session.user.id,
         subtotal,
         discountAmount,
-        discountRank: rank.discount > 0 ? rank.name : "",
+        discountRank: [
+          rank.discount > 0 ? rank.name : "",
+          isReferralFirstOrder ? "Referral 3%" : "",
+        ].filter(Boolean).join(" + ") || "",
         total,
         shippingName,
         shippingPhone,
