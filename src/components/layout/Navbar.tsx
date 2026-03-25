@@ -18,6 +18,7 @@ export default function Navbar({ cartCount }: NavbarProps) {
     { href: "/", label: "Home" },
     { href: "/shop", label: "Shop" },
     { href: "/cards", label: "Cards" },
+    { href: "/blog", label: "Blog" },
     { href: "/cart", label: "Cart" },
     ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
     ...(session
