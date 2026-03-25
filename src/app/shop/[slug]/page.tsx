@@ -10,6 +10,8 @@ import { useCart } from "@/hooks/useCart";
 import SetCardList from "@/components/shop/SetCardList";
 import { getLocalSetCards } from "@/lib/card-data";
 import { getRarityColor, RARITY_LABELS } from "@/lib/optcg-api";
+import LootBoxAnimation from "@/components/ui/LootBoxAnimation";
+import { useToast } from "@/hooks/useToast";
 
 const RARITY_ORDER = ["L", "SEC", "SR", "R", "UC", "C"];
 const RARITY_RATES: Record<string, string> = {
@@ -35,8 +37,10 @@ export default function SetDetailPage({
 }) {
   const { slug } = use(params);
   const { addItem } = useCart();
+  const { addToast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [showLootBox, setShowLootBox] = useState(false);
 
   // Try DB first, fallback to hardcoded
   const fallback = SAMPLE_SETS.find((s) => s.slug === slug) || null;
@@ -82,6 +86,13 @@ export default function SetDetailPage({
     if (set.stock <= 0 && set.status !== "pre-order") return;
     addItem(set, quantity);
     setAdded(true);
+    setShowLootBox(true);
+    addToast({
+      title: `${set.name} x${quantity}`,
+      message: "เพิ่มลงตะกร้าแล้ว!",
+      icon: "📦",
+      type: "reward",
+    });
     setTimeout(() => setAdded(false), 2000);
   };
 
@@ -339,6 +350,13 @@ export default function SetDetailPage({
           <SetCardList setCode={set.code} />
         </motion.div>
       </div>
+
+      {/* Loot Box Animation */}
+      <LootBoxAnimation
+        isOpen={showLootBox}
+        productName={set.name}
+        onComplete={() => setShowLootBox(false)}
+      />
     </div>
   );
 }

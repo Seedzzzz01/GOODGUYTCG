@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getRarityColor, RARITY_LABELS, COLOR_MAP, getCardImageUrl } from "@/lib/optcg-api";
 import { ALL_CARDS } from "@/lib/card-data";
+import TiltCard from "@/components/ui/TiltCard";
 
 // Premium card IDs — SEC rarity cards
 const PREMIUM_CARD_IDS = [
@@ -46,10 +47,7 @@ export default function PremiumCards() {
             transition={{ delay: i * 0.1 }}
           >
             <Link href={`/cards/${card.card_set_id}`}>
-              <motion.div
-                whileHover={{ y: -8, scale: 1.03 }}
-                className="group relative rounded-xl overflow-hidden cursor-pointer"
-              >
+              <TiltCard tiltStrength={10} holographic glare className="group relative rounded-xl overflow-hidden cursor-pointer">
                 {/* Glow effect */}
                 <div
                   className="absolute -inset-1 rounded-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500 blur-md"
@@ -99,7 +97,7 @@ export default function PremiumCards() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </TiltCard>
             </Link>
           </motion.div>
         );

@@ -8,6 +8,7 @@ import CloudTransition from "@/components/layout/CloudTransition";
 import IslandMap from "@/components/shop/IslandMap";
 import PremiumCards from "@/components/shop/PremiumCards";
 import RankBadge from "@/components/gamification/RankBadge";
+import ScrollReveal from "@/components/ui/ScrollReveal";
 import { SAMPLE_SETS, BOUNTY_RANKS } from "@/lib/constants";
 
 export default function Home() {
@@ -128,12 +129,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[#0a0e27]/70" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <ScrollReveal variant="fadeUp" className="text-center mb-12">
             <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
               Treasure Vault
             </span>
@@ -144,7 +140,7 @@ export default function Home() {
               การ์ดแพง หายาก เก็บไว้ไม่ผิดหวัง
             </p>
             <div className="w-16 h-0.5 bg-amber-500/40 mx-auto mt-4" />
-          </motion.div>
+          </ScrollReveal>
 
           <PremiumCards />
 
@@ -175,12 +171,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[#0a0e27]/60" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <ScrollReveal variant="fadeUp" className="text-center mb-12">
             <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
               Loyalty Program
             </span>
@@ -191,7 +182,7 @@ export default function Home() {
               ซื้อเยอะ Rank ยิ่งสูง ส่วนลดยิ่งโหด
             </p>
             <div className="w-16 h-0.5 bg-amber-500/40 mx-auto mt-4" />
-          </motion.div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {BOUNTY_RANKS.map((rank, i) => (
