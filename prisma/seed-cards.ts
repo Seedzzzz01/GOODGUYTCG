@@ -59,11 +59,13 @@ async function main() {
     }
   }
 
-  // Deduplicate cards by card_set_id (keep first occurrence)
+  // Deduplicate within each set, but allow same card_set_id across different sets
+  // Use composite key: set_id + card_set_id + card_image_id
   const seen = new Set<string>();
   const uniqueCards = allCards.filter((c) => {
-    if (seen.has(c.card_set_id)) return false;
-    seen.add(c.card_set_id);
+    const key = `${c.set_id}::${c.card_set_id}::${c.card_image_id}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
     return true;
   });
 
@@ -81,8 +83,12 @@ async function main() {
   for (let i = 0; i < uniqueCards.length; i += BATCH) {
     const batch = uniqueCards.slice(i, i + BATCH);
     await prisma.card.createMany({
-      data: batch.map((c) => ({
-        id: c.card_set_id,
+      data: batch.map((c) => {
+        // For reprint sets (PRB, EB), use composite ID to avoid collision
+        const needsCompositeId = c.set_id.startsWith("PRB") || c.set_id.startsWith("EB");
+        const id = needsCompositeId ? `${c.card_image_id}_${c.set_id}` : c.card_set_id;
+        return {
+        id,
         cardSetId: c.set_id,
         cardImageId: c.card_image_id || c.card_set_id,
         name: c.card_name,
@@ -100,7 +106,8 @@ async function main() {
         marketPrice: c.market_price,
         inventoryPrice: c.inventory_price,
         cardImage: c.card_image || "",
-      })),
+      };
+      }),
       skipDuplicates: true,
     });
     console.log(`  📝 Inserted ${Math.min(i + BATCH, uniqueCards.length)}/${uniqueCards.length}`);
