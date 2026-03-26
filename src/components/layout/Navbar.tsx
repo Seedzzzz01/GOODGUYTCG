@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -40,24 +41,9 @@ export default function Navbar({ cartCount }: NavbarProps) {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            {/* Skull compass icon */}
-            <div className="relative w-9 h-9">
-              <svg viewBox="0 0 36 36" className="w-full h-full">
-                {/* Outer ring */}
-                <circle cx="18" cy="18" r="16" fill="none" stroke="#b8860b" strokeWidth="1.5" opacity="0.6" />
-                <circle cx="18" cy="18" r="14" fill="none" stroke="#ffd700" strokeWidth="0.5" opacity="0.3" />
-                {/* Compass points */}
-                <path d="M18 3 L19.5 8 L18 7 L16.5 8 Z" fill="#ffd700" opacity="0.8" /> {/* N */}
-                <path d="M33 18 L28 19.5 L29 18 L28 16.5 Z" fill="#b8860b" opacity="0.5" /> {/* E */}
-                <path d="M18 33 L16.5 28 L18 29 L19.5 28 Z" fill="#b8860b" opacity="0.5" /> {/* S */}
-                <path d="M3 18 L8 16.5 L7 18 L8 19.5 Z" fill="#b8860b" opacity="0.5" /> {/* W */}
-                {/* Inner skull-like circle */}
-                <circle cx="18" cy="18" r="7" fill="#1a1505" stroke="#b8860b" strokeWidth="1" opacity="0.8" />
-                {/* G letter */}
-                <text x="18" y="22" textAnchor="middle" fill="#ffd700" fontSize="11" fontWeight="900" fontFamily="serif">G</text>
-              </svg>
-              {/* Glow on hover */}
-              <div className="absolute inset-0 rounded-full bg-amber-500/0 group-hover:bg-amber-500/20 transition-colors duration-300" />
+            {/* Logo */}
+            <div className="relative w-10 h-10 flex-shrink-0">
+              <Image src="/images/logo.png" alt="Lucky TCG" width={40} height={40} className="object-contain" />
             </div>
 
             <div className="flex flex-col">
