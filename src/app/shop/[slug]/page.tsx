@@ -10,6 +10,7 @@ import { useCart } from "@/hooks/useCart";
 import SetCardList from "@/components/shop/SetCardList";
 import { getRarityColor, RARITY_LABELS } from "@/lib/optcg-api";
 import LootBoxAnimation from "@/components/ui/LootBoxAnimation";
+import TrustBadges from "@/components/ui/TrustBadges";
 import { useToast } from "@/hooks/useToast";
 
 const RARITY_ORDER = ["L", "SEC", "SR", "R", "UC", "C"];
@@ -262,7 +263,12 @@ export default function SetDetailPage({
               </div>
             )}
 
-            <p className="text-amber-100/30 text-xs text-center">
+            {/* Trust badges */}
+            <div className="mt-4">
+              <TrustBadges />
+            </div>
+
+            <p className="text-amber-100/30 text-xs text-center mt-4">
               สงสัยอะไร แชท LINE: @goodguytcg
             </p>
           </motion.div>

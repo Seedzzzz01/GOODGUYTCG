@@ -163,6 +163,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Why Buy From Us */}
+      <section className="py-20 px-4">
+        <div className="max-w-5xl mx-auto">
+          <ScrollReveal variant="fadeUp" className="text-center mb-12">
+            <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
+              Why GOODGUY TCG
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-amber-100 mt-2">
+              ทำไมต้องซื้อกับเรา?
+            </h2>
+            <div className="w-16 h-0.5 bg-amber-500/40 mx-auto mt-4" />
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[
+              { icon: "✅", title: "ของแท้ 100%", desc: "การ์ด Bandai JP แท้ทุกกล่อง นำเข้าจากญี่ปุ่นโดยตรง ไม่มีของปลอม", color: "#27ae60" },
+              { icon: "🚚", title: "ส่งไว 1-3 วัน", desc: "แพ็คอย่างดี กันกระแทก ส่งทั่วไทยผ่าน Kerry/Flash Express", color: "#3498db" },
+              { icon: "🔒", title: "ชำระเงินปลอดภัย", desc: "โอนผ่าน PromptPay, Mobile Banking ยืนยันออเดอร์ภายใน 1 ชม.", color: "#8e44ad" },
+              { icon: "💬", title: "ซัพพอร์ตตลอด", desc: "แชท LINE @goodguytcg ตอบภายใน 30 นาที ทุกวัน 9:00-21:00", color: "#f5a623" },
+            ].map((item, i) => (
+              <ScrollReveal key={item.title} variant="fadeUp" delay={i * 0.1}>
+                <div className="bg-[#0f1535] border border-amber-500/5 rounded-2xl p-6 text-center h-full hover:border-amber-500/20 transition-colors">
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-2xl mx-auto mb-4"
+                    style={{ backgroundColor: item.color + "15" }}
+                  >
+                    {item.icon}
+                  </div>
+                  <h3 className="text-amber-100 font-black text-sm mb-2">{item.title}</h3>
+                  <p className="text-amber-100/40 text-xs leading-relaxed">{item.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+
+          {/* Trust stats */}
+          <ScrollReveal variant="fadeUp" className="mt-10">
+            <div className="bg-[#0f1535]/50 border border-amber-500/5 rounded-2xl p-6 flex flex-wrap justify-center gap-8 sm:gap-12">
+              {[
+                { value: "100%", label: "ของแท้ Bandai JP" },
+                { value: "1-3 วัน", label: "จัดส่งทั่วไทย" },
+                { value: "30 นาที", label: "ตอบแชทเฉลี่ย" },
+                { value: "7 วัน", label: "เปลี่ยน/คืนสินค้า" },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center">
+                  <p className="text-amber-400 font-black text-xl">{stat.value}</p>
+                  <p className="text-amber-100/30 text-[10px] mt-0.5">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* Bounty Rank Preview */}
       <section className="relative py-20 px-4 overflow-hidden">
         {/* Bounty Board BG */}

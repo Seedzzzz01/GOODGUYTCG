@@ -32,7 +32,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
           exit={{ opacity: [0, 0.6, 0.6, 0] }}
           transition={{ duration: 0.6, times: [0, 0.3, 0.6, 1] }}
         >
-          {Array.from({ length: 8 }).map((_, i) => (
+          {[0.6, -0.8, 1.2, -0.4, 0.9, -1.1, 0.3, -0.7].map((rot, i) => (
             <motion.div
               key={i}
               className="absolute h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent"
@@ -40,7 +40,7 @@ export default function PageTransition({ children }: { children: ReactNode }) {
                 top: `${10 + i * 12}%`,
                 left: "-10%",
                 right: "-10%",
-                rotate: `${-2 + Math.random() * 4}deg`,
+                rotate: `${rot}deg`,
               }}
               exit={{
                 x: ["-100%", "100%"],
