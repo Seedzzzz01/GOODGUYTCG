@@ -127,7 +127,7 @@ export async function POST(request: Request) {
       const created = await tx.order.create({
         data: {
           orderNumber,
-          userId,
+          userId: userId || undefined,
           guestEmail: guestEmail || "",
           guestPhone: !userId ? shippingPhone : "",
           subtotal,

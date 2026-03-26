@@ -41,7 +41,7 @@ export default function CartPage() {
   const handleSubmitOrder = async () => {
     if (!shipping.name || !shipping.phone || !shipping.address) {
       setErrorMsg("กรุณากรอกชื่อ เบอร์โทร และที่อยู่");
-      addToast({ title: "กรอกข้อมูลไม่ครบ", message: "กรุณากรอกชื่อ เบอร์โทร และที่อยู่", icon: "⚠️", type: "error" });
+      addToast({ title: "กรอกข้อมูลไม่ครบ", message: "กรุณากรอกชื่อ เบอร์โทร และที่อยู่", icon: "⚠️", type: "warning" });
       return;
     }
 
@@ -83,7 +83,7 @@ export default function CartPage() {
       if (!orderRes.ok) {
         const err = await orderRes.json();
         setErrorMsg(err.error || "สร้างออเดอร์ไม่สำเร็จ");
-        addToast({ title: "สั่งซื้อไม่สำเร็จ", message: err.error || "กรุณาลองใหม่", icon: "❌", type: "error" });
+        addToast({ title: "สั่งซื้อไม่สำเร็จ", message: err.error || "กรุณาลองใหม่", icon: "❌", type: "warning" });
         setCheckoutState("form");
         return;
       }
@@ -97,7 +97,7 @@ export default function CartPage() {
       setTimeout(() => setShowSpinWheel(true), 2000);
     } catch {
       setErrorMsg("เกิดข้อผิดพลาด กรุณาลองใหม่");
-      addToast({ title: "เกิดข้อผิดพลาด", message: "กรุณาลองใหม่อีกครั้ง", icon: "❌", type: "error" });
+      addToast({ title: "เกิดข้อผิดพลาด", message: "กรุณาลองใหม่อีกครั้ง", icon: "❌", type: "warning" });
       setCheckoutState("form");
     }
   };
