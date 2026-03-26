@@ -19,15 +19,16 @@ export async function GET() {
   return NextResponse.json(orders);
 }
 
-// POST /api/orders — create order (checkout)
+// POST /api/orders — create order (supports both logged-in and guest checkout)
 export async function POST(request: Request) {
   const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const userId = session?.user?.id || null;
 
   const body = await request.json();
-  const { items, shippingName, shippingPhone, shippingAddress, shippingProvince, shippingZipcode, note } = body as {
+  const {
+    items, shippingName, shippingPhone, shippingAddress,
+    shippingProvince, shippingZipcode, note, guestEmail,
+  } = body as {
     items: { productId: string; quantity: number }[];
     shippingName: string;
     shippingPhone: string;
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
     shippingProvince: string;
     shippingZipcode: string;
     note?: string;
+    guestEmail?: string;
   };
 
   if (!items?.length) {
@@ -42,122 +44,135 @@ export async function POST(request: Request) {
   }
 
   if (!shippingName || !shippingPhone || !shippingAddress) {
-    return NextResponse.json({ error: "กรุณากรอกที่อยู่จัดส่ง" }, { status: 400 });
+    return NextResponse.json({ error: "กรุณากรอกชื่อ เบอร์โทร และที่อยู่" }, { status: 400 });
   }
 
-  // Use a Prisma transaction for atomicity
-  const order = await prisma.$transaction(async (tx) => {
-    // 1. Fetch products and validate stock
-    const productIds = items.map((i) => i.productId);
-    const products = await tx.product.findMany({
-      where: { id: { in: productIds } },
-    });
+  // Guest must provide phone at minimum (email optional)
+  if (!userId && !shippingPhone) {
+    return NextResponse.json({ error: "กรุณากรอกเบอร์โทรศัพท์" }, { status: 400 });
+  }
 
-    const productMap = new Map(products.map((p) => [p.id, p]));
+  try {
+    const order = await prisma.$transaction(async (tx) => {
+      // 1. Fetch products and validate stock
+      const productIds = items.map((i) => i.productId);
+      const products = await tx.product.findMany({
+        where: { id: { in: productIds } },
+      });
 
-    for (const item of items) {
-      const product = productMap.get(item.productId);
-      if (!product) throw new Error(`สินค้า ${item.productId} ไม่พบ`);
-      if (product.status === "SOLD_OUT") throw new Error(`${product.name} สินค้าหมด`);
-      if (product.stock < item.quantity && product.status !== "PRE_ORDER") {
-        throw new Error(`${product.name} เหลือ ${product.stock} กล่อง`);
+      const productMap = new Map(products.map((p) => [p.id, p]));
+
+      for (const item of items) {
+        const product = productMap.get(item.productId);
+        if (!product) throw new Error(`สินค้า ${item.productId} ไม่พบ`);
+        if (product.status === "SOLD_OUT") throw new Error(`${product.name} สินค้าหมด`);
+        if (product.stock < item.quantity && product.status !== "PRE_ORDER") {
+          throw new Error(`${product.name} เหลือ ${product.stock} กล่อง`);
+        }
       }
-    }
 
-    // 2. Get user's current totalSpent for bounty rank discount
-    const user = await tx.user.findUnique({
-      where: { id: session.user.id },
-      select: { totalSpent: true, orderCount: true, referredById: true },
-    });
+      // 2. Get discount info (only for logged-in users)
+      let rank = getRankBySpent(0);
+      let isReferralFirstOrder = false;
 
-    const rank = getRankBySpent(user?.totalSpent ?? 0);
+      if (userId) {
+        const user = await tx.user.findUnique({
+          where: { id: userId },
+          select: { totalSpent: true, orderCount: true, referredById: true },
+        });
+        rank = getRankBySpent(user?.totalSpent ?? 0);
+        isReferralFirstOrder = !!user?.referredById && (user?.orderCount ?? 0) === 0;
+      }
 
-    // Check if referred user's first order → bonus 3% discount
-    const isReferralFirstOrder = !!user?.referredById && (user?.orderCount ?? 0) === 0;
+      // 3. Calculate totals
+      let subtotal = 0;
+      const orderItems: {
+        productId: string;
+        productName: string;
+        productCode: string;
+        productImage: string;
+        price: number;
+        quantity: number;
+      }[] = [];
 
-    // 3. Calculate totals server-side
-    let subtotal = 0;
-    const orderItems: {
-      productId: string;
-      productName: string;
-      productCode: string;
-      productImage: string;
-      price: number;
-      quantity: number;
-    }[] = [];
+      for (const item of items) {
+        const product = productMap.get(item.productId)!;
+        subtotal += product.pricePerBox * item.quantity;
+        orderItems.push({
+          productId: product.id,
+          productName: product.name,
+          productCode: product.code,
+          productImage: product.image,
+          price: product.pricePerBox,
+          quantity: item.quantity,
+        });
+      }
 
-    for (const item of items) {
-      const product = productMap.get(item.productId)!;
-      const lineTotal = product.pricePerBox * item.quantity;
-      subtotal += lineTotal;
-      orderItems.push({
-        productId: product.id,
-        productName: product.name,
-        productCode: product.code,
-        productImage: product.image,
-        price: product.pricePerBox,
-        quantity: item.quantity,
+      const rankDiscount = userId ? Math.floor(subtotal * (rank.discount / 100)) : 0;
+      const referralDiscount = isReferralFirstOrder ? Math.floor(subtotal * 0.03) : 0;
+      const discountAmount = rankDiscount + referralDiscount;
+      const total = subtotal - discountAmount;
+
+      // 4. Generate order number: LK + YYMMdd + 4-digit random
+      const now = new Date();
+      const dateStr = [
+        now.getFullYear().toString().slice(-2),
+        String(now.getMonth() + 1).padStart(2, "0"),
+        String(now.getDate()).padStart(2, "0"),
+      ].join("");
+      const rand = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+      const orderNumber = `LK${dateStr}-${rand}`;
+
+      // 5. Create order
+      const created = await tx.order.create({
+        data: {
+          orderNumber,
+          userId,
+          guestEmail: guestEmail || "",
+          guestPhone: !userId ? shippingPhone : "",
+          subtotal,
+          discountAmount,
+          discountRank: [
+            rank.discount > 0 ? rank.name : "",
+            isReferralFirstOrder ? "Referral 3%" : "",
+          ].filter(Boolean).join(" + ") || "",
+          total,
+          shippingName,
+          shippingPhone,
+          shippingAddress,
+          shippingProvince: shippingProvince || "",
+          shippingZipcode: shippingZipcode || "",
+          note: note || "",
+          items: { create: orderItems },
+        },
+        include: { items: true },
       });
-    }
 
-    // Rank discount + referral bonus (3% on first order if referred)
-    const rankDiscount = Math.floor(subtotal * (rank.discount / 100));
-    const referralDiscount = isReferralFirstOrder ? Math.floor(subtotal * 0.03) : 0;
-    const discountAmount = rankDiscount + referralDiscount;
-    const total = subtotal - discountAmount;
+      // 6. Decrement stock
+      for (const item of items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { decrement: item.quantity } },
+        });
+      }
 
-    // 4. Generate order number: GG + YYMMdd + 4-digit random
-    const now = new Date();
-    const dateStr = [
-      now.getFullYear().toString().slice(-2),
-      String(now.getMonth() + 1).padStart(2, "0"),
-      String(now.getDate()).padStart(2, "0"),
-    ].join("");
-    const rand = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
-    const orderNumber = `GG${dateStr}-${rand}`;
+      // 7. Update user stats (only if logged in)
+      if (userId) {
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            totalSpent: { increment: total },
+            orderCount: { increment: 1 },
+          },
+        });
+      }
 
-    // 5. Create order + items
-    const created = await tx.order.create({
-      data: {
-        orderNumber,
-        userId: session.user.id,
-        subtotal,
-        discountAmount,
-        discountRank: [
-          rank.discount > 0 ? rank.name : "",
-          isReferralFirstOrder ? "Referral 3%" : "",
-        ].filter(Boolean).join(" + ") || "",
-        total,
-        shippingName,
-        shippingPhone,
-        shippingAddress,
-        shippingProvince: shippingProvince || "",
-        shippingZipcode: shippingZipcode || "",
-        note: note || "",
-        items: { create: orderItems },
-      },
-      include: { items: true },
+      return created;
     });
 
-    // 6. Decrement stock
-    for (const item of items) {
-      await tx.product.update({
-        where: { id: item.productId },
-        data: { stock: { decrement: item.quantity } },
-      });
-    }
-
-    // 7. Update user stats
-    await tx.user.update({
-      where: { id: session.user.id },
-      data: {
-        totalSpent: { increment: total },
-        orderCount: { increment: 1 },
-      },
-    });
-
-    return created;
-  });
-
-  return NextResponse.json(order, { status: 201 });
+    return NextResponse.json(order, { status: 201 });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "เกิดข้อผิดพลาด";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
 }

@@ -20,7 +20,7 @@ export default function CartPage() {
 
   // Shipping form
   const [shipping, setShipping] = useState({
-    name: "", phone: "", address: "", province: "", zipcode: "", note: "",
+    name: "", phone: "", address: "", province: "", zipcode: "", note: "", email: "",
   });
 
   // Use real session data for rank discount
@@ -35,10 +35,6 @@ export default function CartPage() {
   const finalPrice = totalPrice - discountAmount;
 
   const handleCheckout = async () => {
-    if (!session?.user) {
-      window.location.href = "/auth/login?callbackUrl=/cart";
-      return;
-    }
     setCheckoutState("form");
   };
 
@@ -80,6 +76,7 @@ export default function CartPage() {
           shippingProvince: shipping.province,
           shippingZipcode: shipping.zipcode,
           note: shipping.note,
+          guestEmail: !session?.user ? (shipping as Record<string, string>).email || "" : undefined,
         }),
       });
 
@@ -209,7 +206,7 @@ export default function CartPage() {
                   onClick={handleCheckout}
                   className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-[#0a0e27] font-black text-lg rounded-full transition-colors"
                 >
-                  {session?.user ? "Checkout" : "Login to Checkout"}
+                  Checkout
                 </motion.button>
                 <p className="text-amber-100/20 text-xs text-center mt-3">สงสัยอะไร แชท LINE: @luckytcgthailand</p>
               </>
@@ -226,10 +223,26 @@ export default function CartPage() {
                 className="mt-6 bg-[#0f1535] border border-amber-500/10 rounded-2xl p-6"
               >
                 <h3 className="text-amber-400 font-bold text-sm tracking-wider uppercase mb-4">Shipping Info</h3>
+
+                {/* Guest checkout notice */}
+                {!session?.user && (
+                  <div className="bg-amber-500/5 border border-amber-500/10 rounded-lg p-3 mb-4 text-xs text-amber-100/50">
+                    🛒 สั่งซื้อได้เลยไม่ต้องสมัครสมาชิก — แต่ถ้า{" "}
+                    <a href="/auth/register" className="text-amber-400 underline">สมัครสมาชิก</a>{" "}
+                    จะได้ส่วนลดสะสม Bounty Rank สูงสุด 8%
+                  </div>
+                )}
+
                 {errorMsg && <p className="text-red-400 text-sm mb-3">{errorMsg}</p>}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Input label="ชื่อ-นามสกุล *" value={shipping.name} onChange={v => setShipping(s => ({ ...s, name: v }))} />
                   <Input label="เบอร์โทร *" value={shipping.phone} onChange={v => setShipping(s => ({ ...s, phone: v }))} />
+                  {/* Email for guest — for order updates */}
+                  {!session?.user && (
+                    <div className="sm:col-span-2">
+                      <Input label="อีเมล (สำหรับแจ้งสถานะออเดอร์)" value={(shipping as Record<string, string>).email || ""} onChange={v => setShipping(s => ({ ...s, email: v }))} />
+                    </div>
+                  )}
                   <div className="sm:col-span-2">
                     <Input label="ที่อยู่ *" value={shipping.address} onChange={v => setShipping(s => ({ ...s, address: v }))} />
                   </div>
