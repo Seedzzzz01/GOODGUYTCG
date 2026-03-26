@@ -10,7 +10,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🧭</span>
               <span className="text-amber-400 font-black text-xl tracking-wider">
-                GOODGUY TCG
+                LUCKY TCG THAILAND
               </span>
             </div>
             <p className="text-amber-100/40 text-sm leading-relaxed mb-4">
@@ -79,17 +79,17 @@ export default function Footer() {
               Contact Us
             </h3>
             <div className="space-y-2.5 text-sm text-amber-100/40">
-              <a href="https://line.me/R/ti/p/@goodguytcg" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
-                <span className="text-[#06C755]">💬</span> LINE: @goodguytcg
+              <a href="https://line.me/R/ti/p/@luckytcgthailand" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
+                <span className="text-[#06C755]">💬</span> LINE: @luckytcgthailand
               </a>
-              <a href="mailto:support@goodguytcg.com" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
-                <span>✉️</span> support@goodguytcg.com
+              <a href="mailto:support@luckytcgthailand.com" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
+                <span>✉️</span> support@luckytcgthailand.com
               </a>
-              <a href="https://instagram.com/goodguytcg" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
-                <span>📸</span> Instagram: @goodguytcg
+              <a href="https://instagram.com/luckytcgthailand" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
+                <span>📸</span> Instagram: @luckytcgthailand
               </a>
-              <a href="https://facebook.com/goodguytcg" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
-                <span>📘</span> Facebook: GOODGUY TCG
+              <a href="https://facebook.com/luckytcgthailand" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-amber-400 transition-colors">
+                <span>📘</span> Facebook: LUCKY TCG THAILAND
               </a>
               <p className="text-amber-100/20 text-xs mt-2">
                 เวลาทำการ: ทุกวัน 9:00 - 21:00
@@ -101,7 +101,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-8 pt-8 border-t border-amber-500/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-amber-100/20 text-xs">
-            &copy; {new Date().getFullYear()} GOODGUY TCG Store. All rights reserved.
+            &copy; {new Date().getFullYear()} LUCKY TCG THAILAND Store. All rights reserved.
           </p>
           <div className="flex items-center gap-3 text-amber-100/20 text-[10px]">
             <span>PromptPay</span>

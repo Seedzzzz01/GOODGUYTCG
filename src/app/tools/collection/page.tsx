@@ -7,7 +7,7 @@ import { OPTCGCard } from "@/types";
 import { getCardImageUrl, getRarityColor, RARITY_LABELS } from "@/lib/optcg-api";
 
 // Store collection in localStorage
-const STORAGE_KEY = "goodguy_collection";
+const STORAGE_KEY = "luckytcg_collection";
 
 function loadCollection(): Record<string, boolean> {
   if (typeof window === "undefined") return {};

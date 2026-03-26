@@ -23,7 +23,7 @@ const FAQS: FAQItem[] = [
   { category: "สั่งซื้อ", q: "ชำระเงินได้ช่องทางไหน?", a: "โอนผ่าน Mobile Banking หรือ PromptPay ได้เลย หลังสั่งซื้อจะแสดงข้อมูลบัญชี อัพโหลดสลิปในระบบ เรายืนยันภายใน 1 ชั่วโมง (ในเวลาทำการ)" },
   { category: "สั่งซื้อ", q: "มีขั้นต่ำในการสั่งซื้อไหม?", a: "ไม่มีขั้นต่ำ สั่ง 1 กล่องก็ได้ แต่ถ้าสั่ง 3 กล่องขึ้นไปจะคุ้มค่าค่าส่งมากกว่า" },
   { category: "สั่งซื้อ", q: "มีส่วนลดไหม?", a: "มี! ระบบ Bounty Rank ให้ส่วนลดถาวร 3-8% ตามยอดซื้อสะสม + สมัครด้วย Referral Code ได้ส่วนลด 3% ออเดอร์แรก ดูรายละเอียดได้ที่หน้า Membership" },
-  { category: "สั่งซื้อ", q: "ยกเลิกออเดอร์ได้ไหม?", a: "ยกเลิกได้ก่อนแพ็คสินค้า แจ้งผ่าน LINE @goodguytcg หากชำระเงินแล้วจะคืนเงินภายใน 3 วันทำการ" },
+  { category: "สั่งซื้อ", q: "ยกเลิกออเดอร์ได้ไหม?", a: "ยกเลิกได้ก่อนแพ็คสินค้า แจ้งผ่าน LINE @luckytcgthailand หากชำระเงินแล้วจะคืนเงินภายใน 3 วันทำการ" },
 
   // จัดส่ง
   { category: "จัดส่ง", q: "ส่งกี่วัน?", a: "แพ็คภายใน 1 วันหลังยืนยันชำระเงิน ส่งผ่าน Kerry Express / Flash Express ถึงภายใน 1-3 วันทำการ (กรุงเทพ 1 วัน, ต่างจังหวัด 2-3 วัน)" },
@@ -33,7 +33,7 @@ const FAQS: FAQItem[] = [
 
   // คืน/เปลี่ยน
   { category: "คืน/เปลี่ยน", q: "คืนสินค้าได้ไหม?", a: "ได้ภายใน 7 วันหลังรับของ กรณีสินค้ามีปัญหา (ซีลฉีก, ของไม่ตรง, เสียหายจากขนส่ง) แจ้งพร้อมรูปถ่ายผ่าน LINE เราเปลี่ยนให้ใหม่หรือคืนเงิน" },
-  { category: "คืน/เปลี่ยน", q: "ถ้าสินค้าเสียหายจากการขนส่ง?", a: "ถ่ายรูปสภาพกล่องและสินค้า แจ้ง LINE @goodguytcg ภายใน 24 ชม. หลังรับของ เราส่งให้ใหม่ฟรีไม่มีค่าใช้จ่าย" },
+  { category: "คืน/เปลี่ยน", q: "ถ้าสินค้าเสียหายจากการขนส่ง?", a: "ถ่ายรูปสภาพกล่องและสินค้า แจ้ง LINE @luckytcgthailand ภายใน 24 ชม. หลังรับของ เราส่งให้ใหม่ฟรีไม่มีค่าใช้จ่าย" },
 
   // สมาชิก
   { category: "สมาชิก", q: "สมัครสมาชิกฟรีไหม?", a: "ฟรี! แค่กรอกอีเมลและรหัสผ่าน ได้ Bounty Rank ทันที ยอดซื้อนับอัตโนมัติ ไม่ต้องทำอะไรเพิ่ม" },
@@ -133,10 +133,10 @@ export default function FAQPage() {
           <p className="text-amber-400 font-bold text-lg mb-2">ยังมีคำถาม?</p>
           <p className="text-amber-100/40 text-sm mb-5">แชทหาเราได้ตลอด ตอบไวภายใน 30 นาที</p>
           <div className="flex justify-center gap-3">
-            <a href="https://line.me/R/ti/p/@goodguytcg" target="_blank" rel="noopener noreferrer" className="bg-[#06C755] hover:bg-[#05b04c] text-white font-bold px-6 py-2.5 rounded-full text-sm transition-colors">
-              💬 LINE @goodguytcg
+            <a href="https://line.me/R/ti/p/@luckytcgthailand" target="_blank" rel="noopener noreferrer" className="bg-[#06C755] hover:bg-[#05b04c] text-white font-bold px-6 py-2.5 rounded-full text-sm transition-colors">
+              💬 LINE @luckytcgthailand
             </a>
-            <a href="mailto:support@goodguytcg.com" className="border border-amber-500/30 text-amber-400 font-bold px-6 py-2.5 rounded-full text-sm hover:bg-amber-500/5 transition-colors">
+            <a href="mailto:support@luckytcgthailand.com" className="border border-amber-500/30 text-amber-400 font-bold px-6 py-2.5 rounded-full text-sm hover:bg-amber-500/5 transition-colors">
               ✉️ Email
             </a>
           </div>

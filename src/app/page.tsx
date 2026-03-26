@@ -62,11 +62,11 @@ export default function Home() {
 
             <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black mb-4 leading-none">
               <span className="text-amber-400 drop-shadow-[0_0_30px_rgba(255,215,0,0.3)]">
-                GOODGUY
+                LUCKY TCG
               </span>
               <br />
               <span className="text-amber-100/90 text-3xl sm:text-4xl lg:text-5xl tracking-wider">
-                TCG STORE
+                THAILAND
               </span>
             </h1>
 
@@ -168,7 +168,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <ScrollReveal variant="fadeUp" className="text-center mb-12">
             <span className="text-amber-400/60 text-xs tracking-[0.3em] uppercase">
-              Why GOODGUY TCG
+              Why LUCKY TCG THAILAND
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-amber-100 mt-2">
               ทำไมต้องซื้อกับเรา?
@@ -181,7 +181,7 @@ export default function Home() {
               { icon: "✅", title: "ของแท้ 100%", desc: "การ์ด Bandai JP แท้ทุกกล่อง นำเข้าจากญี่ปุ่นโดยตรง ไม่มีของปลอม", color: "#27ae60" },
               { icon: "🚚", title: "ส่งไว 1-3 วัน", desc: "แพ็คอย่างดี กันกระแทก ส่งทั่วไทยผ่าน Kerry/Flash Express", color: "#3498db" },
               { icon: "🔒", title: "ชำระเงินปลอดภัย", desc: "โอนผ่าน PromptPay, Mobile Banking ยืนยันออเดอร์ภายใน 1 ชม.", color: "#8e44ad" },
-              { icon: "💬", title: "ซัพพอร์ตตลอด", desc: "แชท LINE @goodguytcg ตอบภายใน 30 นาที ทุกวัน 9:00-21:00", color: "#f5a623" },
+              { icon: "💬", title: "ซัพพอร์ตตลอด", desc: "แชท LINE @luckytcgthailand ตอบภายใน 30 นาที ทุกวัน 9:00-21:00", color: "#f5a623" },
             ].map((item, i) => (
               <ScrollReveal key={item.title} variant="fadeUp" delay={i * 0.1}>
                 <div className="bg-[#0f1535] border border-amber-500/5 rounded-2xl p-6 text-center h-full hover:border-amber-500/20 transition-colors">
@@ -312,7 +312,7 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-3 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 font-bold rounded-full transition-colors"
               >
-                LINE: @goodguytcg
+                LINE: @luckytcgthailand
               </motion.button>
             </div>
           </motion.div>

@@ -269,7 +269,7 @@ export default function SetDetailPage({
             </div>
 
             <p className="text-amber-100/30 text-xs text-center mt-4">
-              สงสัยอะไร แชท LINE: @goodguytcg
+              สงสัยอะไร แชท LINE: @luckytcgthailand
             </p>
           </motion.div>
         </div>

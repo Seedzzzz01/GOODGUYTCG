@@ -63,7 +63,7 @@ export default function Navbar({ cartCount }: NavbarProps) {
             <div className="flex flex-col">
               <span className="text-amber-400 font-black text-base tracking-[0.15em] leading-none"
                 style={{ textShadow: "0 0 12px rgba(255,215,0,0.2)" }}>
-                GOODGUY
+                LUCKY TCG THAILAND
               </span>
               <span className="text-amber-600/60 text-[9px] tracking-[0.4em] leading-none mt-0.5 font-medium">
                 TCG STORE

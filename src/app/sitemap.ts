@@ -2,7 +2,7 @@ import { SAMPLE_SETS } from "@/lib/constants";
 import { BLOG_POSTS } from "@/data/blog-posts";
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://goodguytcg.com";
+const BASE_URL = process.env.NEXTAUTH_URL || "https://luckytcgthailand.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [

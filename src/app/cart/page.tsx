@@ -205,7 +205,7 @@ export default function CartPage() {
                 >
                   {session?.user ? "Checkout" : "Login to Checkout"}
                 </motion.button>
-                <p className="text-amber-100/20 text-xs text-center mt-3">สงสัยอะไร แชท LINE: @goodguytcg</p>
+                <p className="text-amber-100/20 text-xs text-center mt-3">สงสัยอะไร แชท LINE: @luckytcgthailand</p>
               </>
             )}
           </div>

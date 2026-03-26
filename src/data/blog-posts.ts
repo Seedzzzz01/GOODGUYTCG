@@ -29,7 +29,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/set-sail.jpg",
     date: "2026-03-20",
     readTime: 12,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["มือใหม่", "วิธีเล่น", "กติกา", "OPTCG"],
     sections: [
       {
@@ -103,7 +103,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/treasure-vault.jpg",
     date: "2026-03-18",
     readTime: 10,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["ประวัติ", "OPTCG", "Bandai", "TCG"],
     sections: [
       {
@@ -152,7 +152,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/bounty-board.jpg",
     date: "2026-03-15",
     readTime: 8,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["Rarity", "สะสม", "Secret Rare", "Treasure Rare"],
     sections: [
       {
@@ -212,7 +212,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/shop-bazaar.jpg",
     date: "2026-03-10",
     readTime: 7,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["JP", "EN", "เปรียบเทียบ", "ลงทุน"],
     sections: [
       {
@@ -255,7 +255,7 @@ export const BLOG_POSTS: BlogPost[] = [
         paragraphs: [
           "ถ้าเน้นสะสมและลงทุน: JP เป็นตัวเลือกที่ดีกว่า เพราะราคารีเซลสูงกว่าและคุณภาพดีกว่า",
           "ถ้าเน้นเล่น: EN จะสะดวกกว่าถ้าไม่อ่านภาษาญี่ปุ่น แต่ถ้าจำ effect ได้ JP ก็เล่นได้สบาย",
-          "ที่ GOODGUY TCG เราขาย JP version เป็นหลัก เพราะลูกค้าส่วนใหญ่ชอบคุณภาพและมูลค่าการรีเซลที่ดีกว่า",
+          "ที่ LUCKY TCG THAILAND เราขาย JP version เป็นหลัก เพราะลูกค้าส่วนใหญ่ชอบคุณภาพและมูลค่าการรีเซลที่ดีกว่า",
         ],
       },
     ],
@@ -270,7 +270,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/captain-desk.jpg",
     date: "2026-03-05",
     readTime: 9,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["สะสม", "เก็บรักษา", "ลงทุน", "Sleeve"],
     sections: [
       {
@@ -331,7 +331,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/set-sail.jpg",
     date: "2026-02-28",
     readTime: 10,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["Deck Building", "Strategy", "มือใหม่", "Meta"],
     sections: [
       {
@@ -385,7 +385,7 @@ export const BLOG_POSTS: BlogPost[] = [
     coverImage: "/images/sections/shop-bazaar.jpg",
     date: "2026-03-25",
     readTime: 6,
-    author: "GOODGUY TCG",
+    author: "LUCKY TCG THAILAND",
     tags: ["ข่าว", "2026", "เซ็ตใหม่", "Meta"],
     sections: [
       {
@@ -418,10 +418,10 @@ export const BLOG_POSTS: BlogPost[] = [
         ],
       },
       {
-        heading: "ซื้อได้ที่ GOODGUY TCG",
+        heading: "ซื้อได้ที่ LUCKY TCG THAILAND",
         icon: "🏪",
         paragraphs: [
-          "ที่ GOODGUY TCG เรามีทุกเซ็ตล่าสุดพร้อมจำหน่าย ทั้ง Booster Box, Starter Deck, Extra Booster และ Premium Booster ส่งตรงจากญี่ปุ่น ของแท้ 100% พร้อมส่วนลดสำหรับสมาชิก Bounty Rank",
+          "ที่ LUCKY TCG THAILAND เรามีทุกเซ็ตล่าสุดพร้อมจำหน่าย ทั้ง Booster Box, Starter Deck, Extra Booster และ Premium Booster ส่งตรงจากญี่ปุ่น ของแท้ 100% พร้อมส่วนลดสำหรับสมาชิก Bounty Rank",
         ],
       },
     ],

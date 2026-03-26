@@ -1,4 +1,4 @@
-# GOODGUY TCG — Project Summary
+# LUCKY TCG THAILAND — Project Summary
 > เอกสารสรุปโครงสร้างเว็บไซต์ร้านขายการ์ด One Piece TCG
 > วันที่: 25 มีนาคม 2026
 
@@ -8,7 +8,7 @@
 
 | รายการ | รายละเอียด |
 |--------|-----------|
-| **ชื่อโปรเจค** | GOODGUY TCG Store |
+| **ชื่อโปรเจค** | LUCKY TCG THAILAND Store |
 | **ประเภท** | E-commerce ขายการ์ด One Piece Card Game (JP version) |
 | **Framework** | Next.js 16 + React 19 + TypeScript |
 | **Database** | PostgreSQL (Prisma ORM) |
@@ -246,12 +246,12 @@ docker-compose down     # Stop
 
 ### Environment Variables (.env)
 ```
-DATABASE_URL=postgresql://user:pass@localhost:5433/goodguytcg
+DATABASE_URL=postgresql://user:pass@localhost:5433/luckytcgthailand
 AUTH_SECRET=<random-secret>
 NEXTAUTH_URL=http://localhost:3000
 AUTH_LINE_ID=<line-oauth-id>
 AUTH_LINE_SECRET=<line-oauth-secret>
-ADMIN_EMAIL=admin@goodguytcg.com
+ADMIN_EMAIL=admin@luckytcgthailand.com
 ADMIN_PASSWORD=<admin-password>
 ```
 
@@ -283,7 +283,7 @@ npm run build && npm start   # Production
 ## 13. File Structure
 
 ```
-GOODGUYTCG/
+LUCKY TCG THAILANDTCG/
 ├── prisma/
 │   ├── schema.prisma          # Database schema
 │   └── seed.ts                # Seed data script

@@ -114,7 +114,7 @@ export default function BlogDetailPage({
           {/* CTA */}
           <div className="bg-gradient-to-r from-amber-500/10 to-amber-600/5 border border-amber-500/20 rounded-2xl p-6 text-center mb-10">
             <p className="text-amber-400 font-bold mb-2">สนใจเริ่มสะสมการ์ด?</p>
-            <p className="text-amber-100/40 text-sm mb-4">เลือกซื้อ Box ของแท้จาก GOODGUY TCG ส่งตรงถึงบ้าน</p>
+            <p className="text-amber-100/40 text-sm mb-4">เลือกซื้อ Box ของแท้จาก LUCKY TCG THAILAND ส่งตรงถึงบ้าน</p>
             <Link href="/shop">
               <motion.button whileHover={{ scale: 1.05 }} className="bg-amber-500 hover:bg-amber-400 text-[#0a0e27] font-black px-6 py-2.5 rounded-full transition-colors text-sm">
                 ดูสินค้าทั้งหมด

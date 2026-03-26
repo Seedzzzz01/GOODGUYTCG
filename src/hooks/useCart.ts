@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { TCGSet, CartItem } from "@/types";
 
-const CART_KEY = "goodguytcg_cart";
+const CART_KEY = "luckytcgthailand_cart";
 
 export function useCart() {
   const [items, setItems] = useState<CartItem[]>([]);

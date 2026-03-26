@@ -14,20 +14,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GOODGUY TCG | One Piece Card Game Store",
+  title: "LUCKY TCG THAILAND | One Piece Card Game Store",
   description:
     "การ์ด One Piece TCG ของแท้ ขายแยก Box ส่งทั่วไทย สมัคร Bounty Rank รับส่วนลดทุกออเดอร์",
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://goodguytcg.com"),
+  metadataBase: new URL(process.env.NEXTAUTH_URL || "https://luckytcgthailand.com"),
   openGraph: {
-    title: "GOODGUY TCG | One Piece Card Game Store",
+    title: "LUCKY TCG THAILAND | One Piece Card Game Store",
     description: "การ์ด One Piece ของแท้ JP Version ส่งตรงถึงบ้าน พร้อมระบบ Bounty Rank รับส่วนลดสะสม",
-    siteName: "GOODGUY TCG",
+    siteName: "LUCKY TCG THAILAND",
     locale: "th_TH",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GOODGUY TCG",
+    title: "LUCKY TCG THAILAND",
     description: "การ์ด One Piece TCG ของแท้ ส่งทั่วไทย",
   },
   robots: {

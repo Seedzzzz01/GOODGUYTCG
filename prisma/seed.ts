@@ -25,7 +25,7 @@ async function main() {
 
   // ─── Create Users ───
   // Admin credentials from env vars (never hardcode in production)
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@goodguytcg.com";
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@luckytcgthailand.com";
   const adminPassword = process.env.ADMIN_PASSWORD || "changeme_in_production";
 
   const adminUser = await prisma.user.upsert({
@@ -46,10 +46,10 @@ async function main() {
   // Demo user only in development
   if (process.env.NODE_ENV !== "production") {
     const demoUser = await prisma.user.upsert({
-      where: { email: "demo@goodguytcg.com" },
+      where: { email: "demo@luckytcgthailand.com" },
       update: {},
       create: {
-        email: "demo@goodguytcg.com",
+        email: "demo@luckytcgthailand.com",
         passwordHash: hashSync("demo12345", 12),
         displayName: "Nakama Member",
         name: "Nakama Member",
