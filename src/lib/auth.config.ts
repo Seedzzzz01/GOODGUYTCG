@@ -34,8 +34,7 @@ export const authConfig: NextAuthConfig = {
       // Protected routes
       if (
         pathname.startsWith("/profile") ||
-        pathname.startsWith("/checkout") ||
-        pathname.startsWith("/orders")
+        pathname.startsWith("/checkout")
       ) {
         return isLoggedIn;
       }

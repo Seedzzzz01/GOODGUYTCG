@@ -27,10 +27,10 @@ export default function CartPage() {
   const userSession = session?.user as { totalSpent?: number; orderCount?: number; referredById?: string } | undefined;
   const userTotalSpent = userSession?.totalSpent ?? 0;
   const rank = getRankBySpent(userTotalSpent);
-  const rankDiscountAmt = Math.round(totalPrice * (rank.discount / 100));
+  const rankDiscountAmt = Math.floor(totalPrice * (rank.discount / 100));
   // Referral 3% bonus on first order
   const isReferralFirstOrder = !!userSession?.referredById && (userSession?.orderCount ?? 0) === 0;
-  const referralDiscountAmt = isReferralFirstOrder ? Math.round(totalPrice * 0.03) : 0;
+  const referralDiscountAmt = isReferralFirstOrder ? Math.floor(totalPrice * 0.03) : 0;
   const discountAmount = rankDiscountAmt + referralDiscountAmt;
   const finalPrice = totalPrice - discountAmount;
 
@@ -91,7 +91,8 @@ export default function CartPage() {
       const order = await orderRes.json();
       setOrderNumber(order.orderNumber);
       setCheckoutState("done");
-      addToast({ title: "สั่งซื้อสำเร็จ!", message: `Order #${order.orderNumber} — โอนเงินแล้วอัพโหลดสลิป`, icon: "🎉", type: "success" });
+      clearCart(); // Clear cart immediately to prevent double-order
+      addToast({ title: "สั่งซื้อสำเร็จ!", message: `Order #${order.orderNumber}`, icon: "🎉", type: "success" });
 
       // Show spin wheel after delay
       setTimeout(() => setShowSpinWheel(true), 2000);

@@ -12,22 +12,23 @@ export async function POST(
   const { orderId } = await params;
   const { approved } = await request.json();
 
-  // Update all pending proofs for this order
-  await prisma.paymentProof.updateMany({
-    where: { orderId, status: "PENDING" },
-    data: {
-      status: approved ? "APPROVED" : "REJECTED",
-      verifiedBy: session!.user.id,
-      verifiedAt: new Date(),
-    },
-  });
+  // Wrap in transaction for atomicity
+  await prisma.$transaction(async (tx) => {
+    await tx.paymentProof.updateMany({
+      where: { orderId, status: "PENDING" },
+      data: {
+        status: approved ? "APPROVED" : "REJECTED",
+        verifiedBy: session!.user.id,
+        verifiedAt: new Date(),
+      },
+    });
 
-  // Update order status
-  await prisma.order.update({
-    where: { id: orderId },
-    data: {
-      status: approved ? "PAYMENT_CONFIRMED" : "PENDING",
-    },
+    await tx.order.update({
+      where: { id: orderId },
+      data: {
+        status: approved ? "PAYMENT_CONFIRMED" : "PENDING",
+      },
+    });
   });
 
   return NextResponse.json({ success: true });

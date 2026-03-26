@@ -1,5 +1,14 @@
 import { TCGSet, BountyRank, SpinReward } from "@/types";
 
+// Payment info — single source of truth
+export const BANK_INFO = {
+  bank: "ธนาคารกสิกรไทย (KBank)",
+  bankShort: "KBank",
+  account: "223-1-55533-4",
+  accountRaw: "2231555334",
+  name: "พิชิต สุจริตจินดานนท์",
+} as const;
+
 export const BOUNTY_RANKS: BountyRank[] = [
   { name: "East Blue", minSpent: 0, discount: 0, icon: "🌊", color: "#4a90d9" },
   { name: "Paradise", minSpent: 5000, discount: 3, icon: "⚓", color: "#f5a623" },

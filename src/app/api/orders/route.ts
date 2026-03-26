@@ -148,12 +148,16 @@ export async function POST(request: Request) {
         include: { items: true },
       });
 
-      // 6. Decrement stock
+      // 6. Decrement stock atomically (prevents negative stock race condition)
       for (const item of items) {
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { stock: { decrement: item.quantity } },
-        });
+        const result = await tx.$executeRaw`
+          UPDATE "Product" SET stock = stock - ${item.quantity}, "updatedAt" = NOW()
+          WHERE id = ${item.productId} AND stock >= ${item.quantity}
+        `;
+        if (result === 0) {
+          const p = productMap.get(item.productId);
+          throw new Error(`${p?.name || item.productId} สินค้าหมด`);
+        }
       }
 
       // 7. Update user stats (only if logged in)

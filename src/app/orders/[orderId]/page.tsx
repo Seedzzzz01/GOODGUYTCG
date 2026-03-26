@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { formatPrice } from "@/lib/constants";
+import { formatPrice, BANK_INFO } from "@/lib/constants";
 import { useToast } from "@/hooks/useToast";
 
 interface OrderItem {
@@ -50,12 +50,6 @@ const STATUS_STEPS = [
   { key: "DELIVERED", label: "ได้รับสินค้า", icon: "🎉" },
 ];
 
-const BANK_INFO = {
-  bank: "ธนาคารกสิกรไทย (KBank)",
-  account: "223-1-55533-4",
-  name: "พิชิต สุจริตจินดานนท์",
-};
-
 export default function OrderDetailPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params);
   const { data: session } = useSession();
@@ -91,8 +85,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ orderId:
     setUploading(true);
     const fd = new FormData();
     fd.append("slip", file);
-    if (!session?.user && guestPhone) fd.append("phone", guestPhone);
-    if (!session?.user && order?.shippingPhone) fd.append("phone", order.shippingPhone);
+    if (!session?.user) {
+      fd.append("phone", guestPhone || order?.shippingPhone || "");
+    }
 
     const res = await fetch(`/api/orders/${order!.id}/upload-slip`, { method: "POST", body: fd });
     if (res.ok) {
