@@ -36,12 +36,17 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy Prisma schema for migrations
+# Copy Prisma schema + client for migrations
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
-# Upload directory (mount as volume in production)
+# Entrypoint script (runs migration then starts app)
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+# Upload directory
 RUN mkdir -p /app/public/uploads/products /app/public/uploads/slips && \
     chown -R nextjs:nodejs /app/public/uploads
 
@@ -51,4 +56,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["/app/docker-entrypoint.sh"]
