@@ -15,8 +15,11 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate --schema=prisma/schema.prisma
 
-# Build Next.js
+# Build Next.js (dummy DB URL for prisma client, not actually connected)
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+ENV NEXTAUTH_SECRET="build-time-secret-not-used-in-production"
+ENV NEXTAUTH_URL="http://localhost:3000"
 RUN npm run build
 
 # --- Runner ---
