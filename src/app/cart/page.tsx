@@ -7,10 +7,12 @@ import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { formatPrice, getRankBySpent } from "@/lib/constants";
 import SpinWheel from "@/components/gamification/SpinWheel";
+import { useToast } from "@/hooks/useToast";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, totalPrice, totalItems } = useCart();
   const { data: session } = useSession();
+  const { addToast } = useToast();
   const [showSpinWheel, setShowSpinWheel] = useState(false);
   const [checkoutState, setCheckoutState] = useState<"idle" | "form" | "saving" | "done" | "error">("idle");
   const [orderNumber, setOrderNumber] = useState("");
@@ -43,6 +45,7 @@ export default function CartPage() {
   const handleSubmitOrder = async () => {
     if (!shipping.name || !shipping.phone || !shipping.address) {
       setErrorMsg("กรุณากรอกชื่อ เบอร์โทร และที่อยู่");
+      addToast({ title: "กรอกข้อมูลไม่ครบ", message: "กรุณากรอกชื่อ เบอร์โทร และที่อยู่", icon: "⚠️", type: "error" });
       return;
     }
 
@@ -83,6 +86,7 @@ export default function CartPage() {
       if (!orderRes.ok) {
         const err = await orderRes.json();
         setErrorMsg(err.error || "สร้างออเดอร์ไม่สำเร็จ");
+        addToast({ title: "สั่งซื้อไม่สำเร็จ", message: err.error || "กรุณาลองใหม่", icon: "❌", type: "error" });
         setCheckoutState("form");
         return;
       }
@@ -90,11 +94,13 @@ export default function CartPage() {
       const order = await orderRes.json();
       setOrderNumber(order.orderNumber);
       setCheckoutState("done");
+      addToast({ title: "สั่งซื้อสำเร็จ!", message: `Order #${order.orderNumber} — โอนเงินแล้วอัพโหลดสลิป`, icon: "🎉", type: "success" });
 
       // Show spin wheel after delay
       setTimeout(() => setShowSpinWheel(true), 2000);
     } catch {
       setErrorMsg("เกิดข้อผิดพลาด กรุณาลองใหม่");
+      addToast({ title: "เกิดข้อผิดพลาด", message: "กรุณาลองใหม่อีกครั้ง", icon: "❌", type: "error" });
       setCheckoutState("form");
     }
   };
@@ -153,7 +159,7 @@ export default function CartPage() {
                     <p className="text-amber-400 font-bold">฿{formatPrice(item.set.pricePerBox * item.quantity)}</p>
                     {item.quantity > 1 && <p className="text-amber-100/30 text-xs">฿{formatPrice(item.set.pricePerBox)} each</p>}
                   </div>
-                  <button onClick={() => removeItem(item.set.id)} className="text-red-400/50 hover:text-red-400 transition-colors text-sm">✕</button>
+                  <button onClick={() => { removeItem(item.set.id); addToast({ title: "ลบสินค้าแล้ว", message: item.set.name, icon: "🗑️", type: "info" }); }} className="text-red-400/50 hover:text-red-400 transition-colors text-sm">✕</button>
                 </motion.div>
               ))}
             </AnimatePresence>
