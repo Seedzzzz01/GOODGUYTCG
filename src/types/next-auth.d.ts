@@ -11,6 +11,7 @@ declare module "next-auth" {
       totalSpent: number;
       orderCount: number;
       displayName: string;
+      referredById?: string | null;
     };
   }
 }
@@ -22,5 +23,6 @@ declare module "next-auth/jwt" {
     totalSpent: number;
     orderCount: number;
     displayName: string;
+    referredById?: string | null;
   }
 }

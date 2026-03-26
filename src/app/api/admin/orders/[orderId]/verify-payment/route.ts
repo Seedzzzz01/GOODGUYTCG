@@ -6,7 +6,7 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ orderId: string }> }
 ) {
-  const { error } = await requireAdmin();
+  const { error, session } = await requireAdmin();
   if (error) return error;
 
   const { orderId } = await params;
@@ -17,7 +17,7 @@ export async function POST(
     where: { orderId, status: "PENDING" },
     data: {
       status: approved ? "APPROVED" : "REJECTED",
-      verifiedBy: session.user.id,
+      verifiedBy: session!.user.id,
       verifiedAt: new Date(),
     },
   });

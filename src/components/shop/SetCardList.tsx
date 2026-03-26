@@ -23,7 +23,7 @@ export default function SetCardList({ setCode }: SetCardListProps) {
     setLoading(true);
     fetch(`/api/cards?setId=${setCode}`)
       .then((r) => r.json())
-      .then((data: OPTCGCardType[]) => {
+      .then((data: OPTCGCard[]) => {
         setCards(data);
         setLoading(false);
       })

@@ -196,7 +196,7 @@ export default function PullSimulatorPage() {
                       <Link href={`/cards/${card.card_set_id}`}>
                         <div className={`relative aspect-[5/7] rounded-lg overflow-hidden cursor-pointer ${
                           isRare ? "ring-2 shadow-lg" : ""
-                        }`} style={isRare ? { ringColor: getRarityColor(card.rarity), boxShadow: `0 0 15px ${getRarityColor(card.rarity)}40` } : {}}>
+                        }`} style={isRare ? { boxShadow: `0 0 15px ${getRarityColor(card.rarity)}40, inset 0 0 0 2px ${getRarityColor(card.rarity)}` } : {}}>
                           <Image
                             src={getCardImageUrl(card, "JP")}
                             alt={card.card_name}

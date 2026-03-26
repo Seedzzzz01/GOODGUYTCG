@@ -19,14 +19,7 @@ interface ProductData {
   packsPerBox: number;
   cardsPerPack: number;
   category: string | null;
-  islandTheme: {
-    name: string;
-    color: string;
-    gradient: string;
-    description: string;
-    arc: string;
-    keyCharacters: string[];
-  } | null;
+  islandTheme: Record<string, unknown> | null;
 }
 
 const EMPTY_PRODUCT: ProductData = {
@@ -36,6 +29,16 @@ const EMPTY_PRODUCT: ProductData = {
   category: "BOOSTER",
   islandTheme: { name: "", color: "#e74c3c", gradient: "from-red-900 via-red-700 to-orange-500", description: "", arc: "", keyCharacters: [] },
 };
+
+// Helper to access islandTheme fields safely
+function themeVal(theme: Record<string, unknown> | null, key: string): string {
+  if (!theme || !theme[key]) return "";
+  return String(theme[key]);
+}
+function themeChars(theme: Record<string, unknown> | null): string[] {
+  if (!theme || !Array.isArray(theme.keyCharacters)) return [];
+  return theme.keyCharacters as string[];
+}
 
 const TABS = ["Basic", "Box", "Image", "Theme"] as const;
 
@@ -70,7 +73,7 @@ export default function ProductModal({ product, onClose, onSaved }: Props) {
 
     const payload = {
       ...form,
-      islandTheme: form.islandTheme?.name ? form.islandTheme : null,
+      islandTheme: themeVal(form.islandTheme, "name") ? form.islandTheme : null,
       category: form.category || null,
     };
 
@@ -136,7 +139,7 @@ export default function ProductModal({ product, onClose, onSaved }: Props) {
   const addCharacter = () => {
     const name = charInput.trim();
     if (!name) return;
-    const current = form.islandTheme?.keyCharacters || [];
+    const current = themeChars(form.islandTheme) || [];
     if (!current.includes(name)) {
       setTheme("keyCharacters", [...current, name]);
     }
@@ -144,7 +147,7 @@ export default function ProductModal({ product, onClose, onSaved }: Props) {
   };
 
   const removeCharacter = (idx: number) => {
-    const current = form.islandTheme?.keyCharacters || [];
+    const current = themeChars(form.islandTheme) || [];
     setTheme("keyCharacters", current.filter((_, i) => i !== idx));
   };
 
@@ -305,27 +308,27 @@ export default function ProductModal({ product, onClose, onSaved }: Props) {
                 </p>
                 <Row>
                   <Field label="Island Name" className="flex-1">
-                    <input value={form.islandTheme?.name || ""} onChange={e => setTheme("name", e.target.value)} placeholder="Foosha Village" className={inputCls} />
+                    <input value={themeVal(form.islandTheme, "name") || ""} onChange={e => setTheme("name", e.target.value)} placeholder="Foosha Village" className={inputCls} />
                   </Field>
                   <Field label="Color" className="w-28">
                     <div className="flex gap-2 items-center">
-                      <input type="color" value={form.islandTheme?.color || "#e74c3c"} onChange={e => setTheme("color", e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0 bg-transparent" />
-                      <input value={form.islandTheme?.color || ""} onChange={e => setTheme("color", e.target.value)} className={inputCls + " flex-1"} />
+                      <input type="color" value={themeVal(form.islandTheme, "color") || "#e74c3c"} onChange={e => setTheme("color", e.target.value)} className="w-8 h-8 rounded cursor-pointer border-0 bg-transparent" />
+                      <input value={themeVal(form.islandTheme, "color") || ""} onChange={e => setTheme("color", e.target.value)} className={inputCls + " flex-1"} />
                     </div>
                   </Field>
                 </Row>
                 <Field label="Arc Name">
-                  <input value={form.islandTheme?.arc || ""} onChange={e => setTheme("arc", e.target.value)} placeholder="Romance Dawn Arc" className={inputCls} />
+                  <input value={themeVal(form.islandTheme, "arc") || ""} onChange={e => setTheme("arc", e.target.value)} placeholder="Romance Dawn Arc" className={inputCls} />
                 </Field>
                 <Field label="Island Description">
-                  <textarea value={form.islandTheme?.description || ""} onChange={e => setTheme("description", e.target.value)} rows={2} placeholder="A quiet coastal village..." className={inputCls} />
+                  <textarea value={themeVal(form.islandTheme, "description") || ""} onChange={e => setTheme("description", e.target.value)} rows={2} placeholder="A quiet coastal village..." className={inputCls} />
                 </Field>
                 <Field label="Gradient Classes">
-                  <input value={form.islandTheme?.gradient || ""} onChange={e => setTheme("gradient", e.target.value)} placeholder="from-red-900 via-red-700 to-orange-500" className={inputCls} />
+                  <input value={themeVal(form.islandTheme, "gradient") || ""} onChange={e => setTheme("gradient", e.target.value)} placeholder="from-red-900 via-red-700 to-orange-500" className={inputCls} />
                 </Field>
                 <Field label="Key Characters">
                   <div className="flex flex-wrap gap-1.5 mb-2">
-                    {(form.islandTheme?.keyCharacters || []).map((c, i) => (
+                    {(themeChars(form.islandTheme) || []).map((c, i) => (
                       <span key={i} className="bg-amber-500/10 text-amber-400 text-xs px-2.5 py-1 rounded-full flex items-center gap-1.5">
                         {c}
                         <button onClick={() => removeCharacter(i)} className="text-amber-100/30 hover:text-red-400">&times;</button>
