@@ -280,27 +280,34 @@ export default function CartPage() {
       {/* Order Received */}
       <AnimatePresence>
         {checkoutState === "done" && !showSpinWheel && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f1535] border border-amber-500/20 rounded-3xl p-8 max-w-sm text-center">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f1535] border border-amber-500/20 rounded-3xl p-8 max-w-sm w-full text-center">
               <motion.p animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 0.5, repeat: 3 }} className="text-5xl mb-4">🎉</motion.p>
-              <h2 className="text-amber-400 font-black text-xl mb-2">Order Received!</h2>
+              <h2 className="text-amber-400 font-black text-xl mb-1">สั่งซื้อสำเร็จ!</h2>
               <p className="text-amber-100/60 text-sm mb-1">Order #{orderNumber}</p>
+              <p className="text-amber-400 font-black text-2xl mb-4">฿{formatPrice(finalPrice)}</p>
 
               {/* Payment info */}
-              <div className="bg-[#1a2040] border border-amber-500/10 rounded-xl p-4 mt-4 text-left">
-                <p className="text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">โอนเงินมาที่</p>
+              <div className="bg-[#1a2040] border border-amber-500/10 rounded-xl p-4 text-left">
+                <p className="text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">💰 โอนเงินมาที่</p>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 bg-[#138f2d] rounded-lg flex items-center justify-center text-white text-xs font-black">K</div>
                   <div>
-                    <p className="text-amber-100 text-sm font-bold">ธนาคารกสิกรไทย (KBank)</p>
+                    <p className="text-amber-100 text-sm font-bold">KBank</p>
                     <p className="text-amber-400 font-mono font-bold text-lg tracking-wider">223-1-55533-4</p>
                   </div>
                 </div>
                 <p className="text-amber-100/50 text-xs">ชื่อบัญชี: พิชิต สุจริตจินดานนท์</p>
-                <p className="text-amber-100/30 text-[10px] mt-2">โอนแล้วอัพโหลดสลิปในหน้า Order หรือแจ้ง LINE @luckytcgthailand</p>
               </div>
 
-              <p className="text-amber-100/40 text-xs mt-3">Preparing your reward spin...</p>
+              {/* CTA to order page */}
+              <Link href={`/orders/${orderNumber}`}>
+                <button className="w-full mt-4 py-3 bg-amber-500 hover:bg-amber-400 text-[#0a0e27] font-black rounded-full transition-colors text-sm">
+                  📤 อัพโหลดสลิป & ดูสถานะออเดอร์
+                </button>
+              </Link>
+
+              <p className="text-amber-100/20 text-[10px] mt-3">กำลังเตรียม Spin Wheel...</p>
             </motion.div>
           </motion.div>
         )}

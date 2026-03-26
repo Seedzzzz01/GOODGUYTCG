@@ -203,11 +203,12 @@ export default function ProfilePage() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-4 bg-[#0a0e27]/50 rounded-xl border border-amber-500/5"
+                        className="p-4 bg-[#0a0e27]/50 rounded-xl border border-amber-500/5 hover:border-amber-500/20 cursor-pointer transition-colors"
+                        onClick={() => window.location.href = `/orders/${order.orderNumber}`}
                       >
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                           <div>
-                            <p className="text-amber-100 font-bold text-sm">{order.orderNumber}</p>
+                            <p className="text-amber-100 font-bold text-sm">{order.orderNumber} <span className="text-amber-400 text-[10px]">ดูรายละเอียด →</span></p>
                             <p className="text-amber-100/30 text-xs">
                               {new Date(order.createdAt).toLocaleDateString("th-TH")}
                             </p>
