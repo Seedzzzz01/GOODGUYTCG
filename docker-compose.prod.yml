@@ -1,16 +1,16 @@
-# Production — full stack
+# Production — full stack with Nginx + SSL
 services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-goodguytcg}
-      POSTGRES_USER: ${POSTGRES_USER:-goodguytcg}
+      POSTGRES_DB: ${POSTGRES_DB:-luckytcg}
+      POSTGRES_USER: ${POSTGRES_USER:-luckytcg}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-goodguytcg}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-luckytcg}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -20,12 +20,12 @@ services:
   app:
     build: .
     restart: unless-stopped
-    ports:
-      - "${APP_PORT:-3000}:3000"
+    expose:
+      - "3000"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-goodguytcg}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-goodguytcg}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-luckytcg}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-luckytcg}
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET in .env}
-      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_URL: https://luckytcgthailand.com
       AUTH_LINE_ID: ${AUTH_LINE_ID:-}
       AUTH_LINE_SECRET: ${AUTH_LINE_SECRET:-}
     depends_on:
@@ -36,9 +36,33 @@ services:
     networks:
       - internal
 
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot-conf:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
+    depends_on:
+      - app
+    networks:
+      - internal
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-conf:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h; done'"
+
 volumes:
   pgdata:
   uploads:
+  certbot-conf:
+  certbot-www:
 
 networks:
   internal:
