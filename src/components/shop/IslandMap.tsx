@@ -213,7 +213,7 @@ export default function IslandMap({ sets }: IslandMapProps) {
       {/* Map Area — full width, card pops from pins */}
       <div className="relative rounded-2xl overflow-hidden border border-amber-800/20" style={{ height: "500px" }}>
         <Image
-          src="/images/map/grand-line-map.png"
+          src="/images/sections/grand-line-map.jpg"
           alt="Grand Line Map"
           fill
           className="object-cover"

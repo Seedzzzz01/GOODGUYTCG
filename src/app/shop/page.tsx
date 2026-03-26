@@ -91,7 +91,7 @@ export default function ShopPage() {
       {/* Shop Header with Bazaar BG */}
       <div className="relative py-16 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/sections/shop-bazaar.jpg" alt="" fill className="object-cover" />
+          <Image src="/images/sections/shop-header.jpg" alt="" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0a0e27]/50" />
         </div>
         <motion.div

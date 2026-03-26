@@ -125,7 +125,7 @@ export default function Home() {
       <section className="relative py-20 px-4 overflow-hidden">
         {/* Treasure Vault BG */}
         <div className="absolute inset-0 z-0">
-          <Image src="/images/sections/treasure-vault.jpg" alt="" fill className="object-cover" />
+          <Image src="/images/sections/hero-bg.jpg" alt="" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0a0e27]/70" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto">
@@ -281,7 +281,7 @@ export default function Home() {
       <section className="relative py-20 px-4 overflow-hidden">
         {/* Set Sail BG */}
         <div className="absolute inset-0 z-0">
-          <Image src="/images/sections/set-sail.jpg" alt="" fill className="object-cover" />
+          <Image src="/images/sections/hero-bg.jpg" alt="" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0a0e27]/60" />
         </div>
         <div className="relative z-10 max-w-3xl mx-auto text-center">

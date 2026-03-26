@@ -29,7 +29,7 @@ export default function BlogPage() {
       {/* Header */}
       <div className="relative py-16 px-4 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/sections/captain-desk.jpg" alt="" fill className="object-cover" />
+          <Image src="/images/sections/hero-bg.jpg" alt="" fill className="object-cover" />
           <div className="absolute inset-0 bg-[#0a0e27]/60" />
         </div>
         <motion.div
