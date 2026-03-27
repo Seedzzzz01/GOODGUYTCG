@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import CloudTransition from "@/components/layout/CloudTransition";
@@ -9,10 +9,45 @@ import IslandMap from "@/components/shop/IslandMap";
 import PremiumCards from "@/components/shop/PremiumCards";
 import RankBadge from "@/components/gamification/RankBadge";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import { SAMPLE_SETS, BOUNTY_RANKS } from "@/lib/constants";
+import { BOUNTY_RANKS } from "@/lib/constants";
+import { TCGSet } from "@/types";
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [products, setProducts] = useState<TCGSet[]>([]);
+
+  useEffect(() => {
+    fetch("/api/products")
+      .then((r) => r.json())
+      .then((data) => {
+        // Map DB product format to TCGSet format for IslandMap
+        const sets: TCGSet[] = data.map((p: Record<string, unknown>) => ({
+          id: p.code as string,
+          name: p.name as string,
+          slug: p.slug as string,
+          code: p.code as string,
+          description: (p.description as string) || "",
+          image: (p.image as string) || "",
+          boxCount: (p.boxCount as number) || 1,
+          pricePerBox: p.pricePerBox as number,
+          stock: p.stock as number,
+          status: ((p.status as string) || "IN_STOCK").toLowerCase().replace("_", "-") as "in-stock" | "pre-order" | "sold-out",
+          releaseDate: (p.releaseDate as string) || "",
+          packsPerBox: (p.packsPerBox as number) || 24,
+          cardsPerPack: (p.cardsPerPack as number) || 6,
+          islandTheme: (p.islandTheme as TCGSet["islandTheme"]) || {
+            name: (p.name as string) || "",
+            color: "#4a90d9",
+            gradient: "from-blue-900 to-blue-700",
+            description: "",
+            arc: "",
+            keyCharacters: [],
+          },
+        }));
+        setProducts(sets);
+      })
+      .catch(() => {});
+  }, []);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -116,7 +151,7 @@ export default function Home() {
       <CloudTransition>
         <section className="relative py-16 px-4">
           <div className="max-w-7xl mx-auto">
-            <IslandMap sets={SAMPLE_SETS} />
+            <IslandMap sets={products} />
           </div>
         </section>
       </CloudTransition>

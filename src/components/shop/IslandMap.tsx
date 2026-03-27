@@ -63,7 +63,11 @@ function MapPin({ set, index }: { set: TCGSet; index: number }) {
                     />
                   </div>
                   <p className="text-amber-300 text-[9px] font-black truncate max-w-[80px] text-center">{set.name}</p>
-                  <p className="text-amber-400 text-[10px] font-bold">฿{formatPrice(set.pricePerBox)}</p>
+                  {set.status === "sold-out" || set.stock === 0 ? (
+                    <p className="text-red-400 text-[10px] font-bold">Sold Out</p>
+                  ) : (
+                    <p className="text-amber-400 text-[10px] font-bold">฿{formatPrice(set.pricePerBox)}</p>
+                  )}
                 </div>
                 {/* Arrow pointing down */}
                 <div className="w-0 h-0 mx-auto border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#0a0e27]/95" />
@@ -85,9 +89,11 @@ function MapPin({ set, index }: { set: TCGSet; index: number }) {
           {/* Pin dot */}
           <motion.div
             animate={isHovered ? { scale: 1.3 } : { scale: 1 }}
-            className="w-4 h-4 rounded-full border-2 shadow-lg transition-colors duration-300"
+            className={`w-4 h-4 rounded-full border-2 shadow-lg transition-colors duration-300 ${
+              set.status === "sold-out" || set.stock === 0 ? "opacity-50" : ""
+            }`}
             style={{
-              backgroundColor: set.islandTheme.color,
+              backgroundColor: set.status === "sold-out" || set.stock === 0 ? "#666" : set.islandTheme.color,
               borderColor: isHovered ? "#ffd700" : "rgba(180,140,60,0.5)",
               boxShadow: isHovered
                 ? `0 0 12px ${set.islandTheme.color}, 0 0 24px ${set.islandTheme.color}40`
@@ -154,13 +160,26 @@ function SetGridCard({ set, delay }: { set: TCGSet; delay: number }) {
                 <span className="text-white text-[10px] font-bold">{set.code}</span>
               </div>
 
-              {/* Stock badge */}
-              {set.stock > 0 && (
+              {/* Status / Stock badge */}
+              {set.status === "sold-out" || set.stock === 0 ? (
+                <div className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-red-600/90">
+                  Sold Out
+                </div>
+              ) : set.status === "pre-order" ? (
+                <div className="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-yellow-600/90">
+                  Pre-Order
+                </div>
+              ) : (
                 <div className={`absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full text-[10px] font-bold text-white ${
                   set.stock <= 3 ? "bg-red-500" : set.stock <= 8 ? "bg-amber-500" : "bg-emerald-500"
                 }`}>
-                  {set.stock}
+                  {set.stock <= 3 ? `${set.stock} Left` : "In Stock"}
                 </div>
+              )}
+
+              {/* Sold out overlay */}
+              {(set.status === "sold-out" || set.stock === 0) && (
+                <div className="absolute inset-0 bg-black/40 z-[5] rounded-t-xl" />
               )}
             </div>
 

@@ -84,9 +84,9 @@ async function main() {
     const batch = uniqueCards.slice(i, i + BATCH);
     await prisma.card.createMany({
       data: batch.map((c) => {
-        // For reprint sets (PRB, EB), use composite ID to avoid collision
-        const needsCompositeId = c.set_id.startsWith("PRB") || c.set_id.startsWith("EB");
-        const id = needsCompositeId ? `${c.card_image_id}_${c.set_id}` : c.card_set_id;
+        // Use composite ID (set_id + card_image_id) to preserve all versions across sets
+        const imgId = c.card_image_id || c.card_set_id;
+        const id = `${c.set_id}::${imgId}`;
         return {
         id,
         cardSetId: c.set_id,

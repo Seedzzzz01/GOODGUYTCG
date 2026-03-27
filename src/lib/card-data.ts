@@ -23,7 +23,8 @@ function toOPTCGCard(card: {
   cardImage: string;
 }): OPTCGCard {
   return {
-    card_set_id: card.id,
+    // ID format: "OP-01::OP01-006" — extract the card part after ::
+    card_set_id: card.id.includes("::") ? card.id.split("::")[1] : card.id,
     card_name: card.name,
     set_id: card.cardSetId,
     set_name: card.setName,
@@ -57,8 +58,14 @@ export async function getSetCards(setId: string): Promise<OPTCGCard[]> {
 }
 
 export async function getCard(cardId: string): Promise<OPTCGCard[]> {
+  // ID in DB is "SET::CARD_IMAGE_ID", search by contains
   const cards = await prisma.card.findMany({
-    where: { id: cardId },
+    where: {
+      OR: [
+        { id: { contains: cardId } },
+        { cardImageId: { startsWith: cardId } },
+      ],
+    },
   });
   return cards.map(toOPTCGCard);
 }
